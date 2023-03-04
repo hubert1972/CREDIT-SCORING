@@ -1,0 +1,70 @@
+﻿@model List<UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto>
+
+@{
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor1 = Model[0];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor2 = Model[1];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor3 = Model[2];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor4 = Model[3];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor5 = Model[4];
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Etiqueta</th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>E</th>
+            <th>Total General</th>
+        </tr>
+    </thead>
+    <tbody style="color:black;">
+        <tr>
+            <td><b>@valor1.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((valor1.A / valor1.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor1.B / valor1.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor1.C / valor1.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor1.D / valor1.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor1.E / valor1.Total) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+        <tr>
+            <td><b>@valor2.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((valor2.A / valor2.Total) * 100, 2))%</td>
+            <td style="background-color:yellow;">@(Math.Round((valor2.B / valor2.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor2.C / valor2.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor2.D / valor2.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor2.E / valor2.Total) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+        <tr>
+            <td><b>@valor3.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((valor3.A / valor3.Total) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((valor3.B / valor3.Total) * 100, 2))%</td>
+            <td style="background-color:yellow;">@(Math.Round((valor3.C / valor3.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor3.D / valor3.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor3.E / valor3.Total) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+        <tr>
+            <td><b>@valor4.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((valor4.A / valor4.Total) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((valor4.B / valor4.Total) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((valor4.C / valor4.Total) * 100, 2))%</td>
+            <td style="background-color:yellow;">@(Math.Round((valor4.D / valor4.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor4.E / valor4.Total) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+        <tr>
+            <td><b>@valor5.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((valor5.A / valor5.Total) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((valor5.B / valor5.Total) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((valor5.C / valor5.Total) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((valor5.D / valor5.Total) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((valor5.E / valor5.Total) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+    </tbody>
+</table>

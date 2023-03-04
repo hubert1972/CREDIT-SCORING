@@ -1,0 +1,63 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "/Views/Shared/Layouts/_MainLayout.cshtml";
+}
+
+<style>
+    .aut-bg-img {
+        background-image: none;
+    }
+
+    .auth-wrapper .auth-side-img {
+        background-image: url(/img/portada.jpeg);
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        background-position-x: left;
+        background-position-y: center;
+    }
+</style>
+
+<div class="auth-wrapper align-items-stretch aut-bg-img">
+    <div class="flex-grow-1">
+        <div class="h-100 d-lg-flex align-items-end auth-side-img">
+            <div class="col-sm-10 auth-content w-auto">
+                <img src="../assets/images/logo.svg" alt="" class="img-fluid">
+            </div>
+        </div>
+        <div class="auth-side-form">
+            <div class=" auth-content">
+                <h2>SHAR 3000</h2>
+                <h3 class="mb-4 f-w-400">Inicio de sesión</h3>
+                <form id="account" method="post" class="">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </span>
+                        <input asp-for="Input.Email" class="form-control" placeholder="Usuario" />
+                    </div>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+
+                    <div class="input-group mb-4">
+                        <span class="input-group-text"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+                        <input asp-for="Input.Password" class="form-control" placeholder="Contraseña" />
+                    </div>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+                    <div class="form-group  mt-2">
+                        <div class="form-check">
+                            <input asp-for="Input.RememberMe" class="form-check-input" />
+                            <label class="form-check-label" for="flexCheckChecked">
+                                Recordarme
+                            </label>
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-block btn-primary mb-0" value="Iniciar" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

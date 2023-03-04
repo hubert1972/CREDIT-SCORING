@@ -1,0 +1,1892 @@
+﻿@using Microsoft.AspNetCore.Html
+@using UI.WEB.Models
+@*@model UI.WEB.Models.Cliente*@
+@{
+    ViewData["Title"] = "Perfil del cliente";
+    List<CreditosCliente> Creditos = ViewBag.Credits as List<CreditosCliente>;
+    List<DecisionCrediticia> Decisiones = (ViewBag.DecisionCrediticia as List<DecisionCrediticia>);
+    string Foto = (ViewBag.Foto as string);
+    List<SelectListItem> Productos = (ViewBag.Productos as List<SelectListItem>);
+
+    //Solo para uso del resumen.
+    var CreditosActivos = Creditos.Where(c => c.EsActivo);
+    var CreditosVigentes = @CreditosActivos.Where(c => c.EstatusModificado == "Vigente");
+    var CreditosEnMora = @CreditosActivos.Where(c => c.EstatusModificado == "Mora");
+    var CreditosRenegociados = @CreditosActivos.Where(c => c.EstatusModificado == "Renegociada");
+    var CreditosCastigados = @CreditosActivos.Where(c => c.EstatusModificado == "Castigado");
+    var CreditosEnJudicial = @CreditosActivos.Where(c => c.EstatusModificado == "Judicial");
+    var CreditosBloqueados = @CreditosActivos.Where(c => c.EstatusModificado == "Bloqueada");
+    var CreditosNoEspecificados = @CreditosActivos.Where(c => c.EstatusModificado is null || c.EstatusModificado == "No especificado");
+
+    var CreditosInactivos = @Creditos.Where(c => !c.EsActivo);
+    var CreditosCancelados = @Creditos.Where(c => c.EstatusModificado == "Cancelado" || (!c.EsActivo && (c.EstatusModificado == "Vigente" || c.EstatusModificado == "Bloqueada") && c.TotalAdeudado == 0));
+    var CreditosEstadoInactivo = @Creditos.Where(c => c.EstatusModificado == "Inactiva");
+    var CreditosInactivosNoEspecificados = @CreditosInactivos.Where(c => c.EstatusModificado is null || c.EstatusModificado == "No especificado");
+
+    var CreditosPorAño = Creditos.GroupBy(c => DateTime.Parse(c.FechaApertura).Year);
+
+    string ScoreDecisionBase = Decisiones.Where(x => x.NivelRiesgo.Trim() == Model.NivelRiesgoBase.Trim()).Select(x => x.DecisionBase).FirstOrDefault();
+    string ScoreDecisionOptimista = Decisiones.Where(x => x.NivelRiesgo.Trim() == Model.NivelRiesgoOptim.Trim()).Select(x => x.DecisionOptimista).FirstOrDefault();
+    string ScoreDecisionPesimista = Decisiones.Where(x => x.NivelRiesgo.Trim() == Model.NivelRiesgoPesim.Trim()).Select(x => x.DecisionPesimista).FirstOrDefault();
+
+    bool DecisionCrediticiaDenegado = (!Model.FlagDecisionScore || !Model.FlagLimitesPolitica || !Model.FlagCupoCreditos);
+}
+
+
+@functions {
+    IHtmlContent GetBadge(string label)
+    {
+        string badge_class;
+        label = label.ToUpper();
+
+        switch (label.Trim())
+        {
+            case "VIGENTE":
+                badge_class = "bg-success";
+                break;
+            case "CUENTA SIN BLOQUEO":
+                badge_class = "bg-info";
+                break;
+            case "SALDADO":
+            case "PRESTAMO CANCELADO":
+            case "CANCELADO":
+            case "CANCELADA":
+            case "INACTIVA":
+                badge_class = "bg-secondary";
+                break;
+            case "MORA":
+            case "CASTIGADO":
+            case "JUDICIAL":
+                badge_class = "bg-danger";
+                break;
+            default:
+                badge_class = "bg-warning";
+                break;
+        }
+
+        return Html.Raw($@"<label class='badge {badge_class}' style='max-width: 100%; overflow: hidden; text-overflow: ellipsis' title='{label}'>{label}</label>");
+    }
+}
+
+@section Styles {
+    <style>
+        #user-resume .profile-dp {
+            position: relative;
+            overflow: hidden;
+            padding: 5px;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+        }
+
+            #user-resume .profile-dp img {
+                border-radius: 50%;
+                box-shadow: 0 0 0 3px #fff;
+                width: 100px;
+            }
+
+        #user-resume .text-muted {
+            color: #6c757d !important;
+        }
+
+        #user-resume .profile-tabs .nav-item .nav-link:after {
+            content: "";
+            background: #7267EF;
+            position: absolute;
+            transition: all 0.3s ease-in-out;
+            left: 50%;
+            right: 50%;
+            bottom: -1px;
+            height: 2px;
+            border-radius: 2px 2px 0 0;
+        }
+
+        #user-resume .profile-tabs .nav-link {
+            position: relative;
+            border-color: transparent;
+            border: 0;
+            background: none;
+            outline: none;
+            width: 100%;
+        }
+
+            #user-resume .profile-tabs .nav-link.active:after {
+                left: 0;
+                right: 0;
+            }
+
+        .nav-tabs-top > .tab-content {
+            background: unset;
+        }
+
+        .table .table-info th {
+            background: #4fceda;
+        }
+
+        .table-responsive th, .table-responsive-md th, .table-responsive-lg th {
+            white-space: nowrap;
+        }
+
+        .table-responsive td label {
+            margin: 0;
+        }
+
+        #decision .table tr.table-active th, .table tr.table-active td {
+            background: #f0f2f8;
+            background-image: none;
+        }
+
+        .order-card {
+            overflow: hidden;
+        }
+
+            .order-card .card-icon {
+                position: absolute;
+                right: -17px;
+                top: 20px;
+                font-size: 100px;
+                opacity: 0.5;
+                color: gold;
+            }
+
+        .credits-timeline {
+            position: relative;
+            z-index: 0;
+        }
+
+            .credits-timeline:before {
+                content: "";
+                position: absolute;
+                background: #ebebeb;
+                height: 100%;
+                width: 3px;
+                top: 0;
+                left: 70px;
+                z-index: -1;
+            }
+
+            .credits-timeline .row p {
+                margin-left: 5px;
+                margin-right: 15px;
+            }
+
+            .credits-timeline .row .fas {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                text-align: center;
+                padding: 7px 8px;
+                font-size: 16px;
+                color: #fff;
+                z-index: 2;
+            }
+
+        #table-scores tr:not(:first-child) td {
+            font-weight: lighter;
+        }
+
+            #table-scores tr:not(:first-child) td:nth-child(@(Model.ScoreGanador == "optim" ? 3 : (Model.ScoreGanador == "base" ? 2 : 4))) {
+                color: rgba(1, 174, 67, .7);
+                font-weight: bold;
+            }
+    </style>
+}
+
+    <div>
+        <div id="user-resume" class="user-profile card user-card mb-4 mt-4">
+            <div class="card-body py-0 shadow-sm">
+                <div class="user-about-block m-0">
+                    <div class="row">
+                        <div class="col-md-4 text-center mt-n5">
+                            <div class="change-profile text-center">
+                                <div class="w-auto d-inline-block">
+                                    <a>
+                                        <div class="profile-dp shadow-sm">
+                                            <div class="position-relative d-inline-block">
+                                                <img class="img-fluid" src="data:;base64,@Foto" alt="Foto">
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <h5 class="mb-1">@(Model.Nombres + " " + Model.Apellidos)</h5>
+                        <p class="mb-2 text-muted">@Model.Identificacion</p>
+                        @if (Model is Cliente1){
+                            <p class="mb-0 text-danger font-bold">DATOS HISTORICOS</p>
+                            <p class="mb-0 text-danger font-bold">@Model.FechaCreacion</p>
+                        }
+                    </div>
+                    <div class="col-md-8 mt-md-4">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-6">
+                                <div class="row">
+                                    <div class="col-6 pr-0">
+                                        Fecha de nacimiento:
+                                    </div>
+                                    <div class="col-6">
+                                        <b>@Model.FechaNacimiento</b>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 pr-0">
+                                        Lugar de nacimiento:
+                                    </div>
+                                    <div class="col-6">
+                                        <b>@Model.LugarNacimiento</b>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 pr-0">
+                                        Sexo:
+                                    </div>
+                                    <div class="col-6">
+                                        <b>@Model.Sexo</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6">
+                                <div class="row">
+                                    <div class="col-6 pr-0">
+                                        Edad:
+                                    </div>
+                                    <div class="col-6">
+                                        <b>@Model.Edad años</b>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 pr-0">
+                                        Estado civil:
+                                    </div>
+                                    <div class="col-6">
+                                        <b>@Model.EstadoCivil</b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="nav nav-tabs profile-tabs nav-fill mt-2 mt-md-3" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#resume"> <i class="fas fa-user mr-2"></i>Resumen</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#details">Mapeo de la deuda</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#analyze">Analisis crediticio</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#decision">Simulación crediticia</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-tabs-top pt-1">
+        <div class="tab-content">
+            <div class="tab-pane fade active show" id="resume">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <div class="card order-card">
+                            <div class="card-body">
+                                <h6 class="">Monto maximo historico</h6>
+                                <h2 class="">RD @Model.MontoMaxCredHistDo?.ToString("N2")</h2>
+                                <h5 class="m-b-0">US @Model.MontoMaxCredHistUs?.ToString("N2")</h5>
+                                <i class="d-block fas fa-coins card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="m-b-10 text-center text-white">
+                                            Cuentas Abiertas
+                                            <span class="badge bg-success rounded-pill ml-1">
+                                                @CreditosActivos.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center pl-0">
+                                                <h2 class="mb-2 text-white">
+                                                    @CreditosActivos.Where(c => c.Moneda == "RD").Count()
+                                                </h2>
+                                            </div>
+                                            <div class="col-6 text-center pr-0">
+                                                <h2 class="mb-2 text-white">
+                                                    @CreditosActivos.Where(c => c.Moneda == "US").Count()
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center pl-0">
+                                                RD @CreditosActivos.Where(c => c.Moneda == "RD").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center pr-0">
+                                                US @CreditosActivos.Where(c => c.Moneda == "US").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos vigentes
+                                            <span class="badge bg-success rounded-pill ml-1">
+                                                @CreditosVigentes.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosVigentes.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosVigentes.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosVigentes.Where(c => c.Moneda == "RD").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosVigentes.Where(c => c.Moneda == "US").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos en mora
+                                            <span class="badge bg-danger rounded-pill ml-1">
+                                                @CreditosEnMora.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosEnMora.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosEnMora.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosEnMora.Where(c => c.Moneda == "RD").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosEnMora.Where(c => c.Moneda == "US").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos renegociados
+                                            <span class="badge bg-primary rounded-pill ml-1">
+                                                @CreditosRenegociados.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosRenegociados.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosRenegociados.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosRenegociados.Where(c => c.Moneda == "RD").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosRenegociados.Where(c => c.Moneda == "US").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos Castigados
+                                            <span class="badge bg-danger rounded-pill ml-1">
+                                                @CreditosCastigados.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosCastigados.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosCastigados.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosCastigados.Where(c => c.Moneda == "RD").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosCastigados.Where(c => c.Moneda == "US").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos en Judicial
+                                            <span class="badge bg-danger rounded-pill ml-1">
+                                                @CreditosEnJudicial.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosEnJudicial.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosEnJudicial.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosEnJudicial.Where(c => c.Moneda == "RD").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosEnJudicial.Where(c => c.Moneda == "US").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos en bloqueo
+                                            <span class="badge bg-danger rounded-pill ml-1">
+                                                @CreditosBloqueados.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosBloqueados.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosBloqueados.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosBloqueados.Where(c => c.Moneda == "RD").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosBloqueados.Where(c => c.Moneda == "US").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos con estado no especificado
+                                            <span class="badge bg-warning rounded-pill ml-1">
+                                                @CreditosNoEspecificados.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosNoEspecificados.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosNoEspecificados.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosNoEspecificados.Where(c => c.Moneda == "RD").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosNoEspecificados.Where(c => c.Moneda == "US").Sum(c => c.TotalAdeudado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="m-b-10 text-center text-white">
+                                            Cuentas cerradas
+                                            <span class="badge bg-secondary rounded-pill ml-1">
+                                                @CreditosInactivos.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2 text-white">
+                                                    @CreditosInactivos.Where(c => c.Moneda == "RD").Count()
+                                                </h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2 text-white">
+                                                    @CreditosInactivos.Where(c => c.Moneda == "US").Count()
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosInactivos.Where(c => c.Moneda == "RD").Sum(c => c.CreditoAprobado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosInactivos.Where(c => c.Moneda == "US").Sum(c => c.CreditoAprobado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos cancelados
+                                            <span class="badge bg-secondary rounded-pill ml-1">
+                                                @CreditosCancelados.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosCancelados.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosCancelados.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosCancelados.Where(c => c.Moneda == "RD").Sum(c => c.CreditoAprobado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosCancelados.Where(c => c.Moneda == "US").Sum(c => c.CreditoAprobado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos inactivos
+                                            <span class="badge bg-secondary rounded-pill ml-1">
+                                                @CreditosEstadoInactivo.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosEstadoInactivo.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosEstadoInactivo.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosEstadoInactivo.Where(c => c.Moneda == "RD").Sum(c => c.CreditoAprobado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosEstadoInactivo.Where(c => c.Moneda == "US").Sum(c => c.CreditoAprobado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-12 col-sm-12 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center m-l-0">
+                                    <div class="col">
+                                        <h6 class="text-muted m-b-10 text-center">
+                                            Creditos con estado no especificado
+                                            <span class="badge bg-warning rounded-pill ml-1">
+                                                @CreditosInactivosNoEspecificados.Count()
+                                            </span>
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosInactivosNoEspecificados.Where(c => c.Moneda == "RD").Count()</h2>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h2 class="mb-2">@CreditosInactivosNoEspecificados.Where(c => c.Moneda == "US").Count()</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-center">
+                                                RD @CreditosInactivosNoEspecificados.Where(c => c.Moneda == "RD").Sum(c => c.CreditoAprobado)?.ToString("N2")
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                US @CreditosInactivosNoEspecificados.Where(c => c.Moneda == "US").Sum(c => c.CreditoAprobado)?.ToString("N2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="details">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#grap">Grafico</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#map">Linea de tiempo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#map-acreedor">Agrupadas por acreedor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tcr">Tarjetas de credito</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#pre">Prestamos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#srv">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tel">Telecomunicaciones</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="grap">
+                        <div class="card border-top-0">
+                            <div class="card-body">
+                                <div class="chart1-container text-center">
+                                    <canvas id="map-chart" class="m-0 d-inline" style="max-height: 350px;width: 400px"></canvas>
+                                    <canvas id="map-chart-us" class="m-0 mt-5 d-inline" style="max-height: 350px;width: 400px"></canvas>
+                                    <canvas id="map-chart-count" class="m-0 mt-5 d-inline" style="max-height: 350px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="map">
+                        <div class="card latest-update-card border-top-0">
+                            <div class="card-header pt-1 pb-1">
+                                <div class="row">
+                                    <div class="col">
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input show-active-check" type="checkbox" checked>
+                                            <label class="form-check-label" for="show-active-check">Mostrar inactivos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pr-0 pb-0">
+
+                                <div class="credits-timeline">
+                                    @foreach (var group in CreditosPorAño.OrderByDescending(k => k.Key))
+                                    {
+                                        <div class="row">
+                                            <div class="col-auto text-end update-meta">
+                                                <p class=" m-b-0 d-inline-flex">@group.Key</p>
+                                                <i class="fas fa-calendar bg-info"></i>
+                                            </div>
+                                            <div class="col table-responsive">
+                                                <table class="table table-hover bg-white">
+                                                    <thead>
+                                                        <tr class="table-info">
+                                                            <th>Accreedor / Titular</th>
+                                                            <th>Totales</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var group_moneda in group.GroupBy(c => c.Moneda))
+                                                        {
+                                                            <tr class="table-active">
+                                                                <td class="border-top-0" colspan="2">
+                                                                    <h6 class="m-0 text-primary">@group_moneda.Key</h6>
+                                                                </td>
+                                                            </tr>
+
+
+                                                            @foreach (var group_cre in group_moneda.GroupBy(c => c.Acreedor.Trim()))
+                                                            {
+                                                                <tr>
+                                                                    <td data-active="@(group_cre.Sum(c => Convert.ToInt16(c.EsActivo))  > 0)">@group_cre.Key</td>
+                                                                    <td class="b-none">
+                                                                        <div class="d-inline-block">
+                                                                            <div>
+                                                                                <span class="text-muted">Aprobado:</span>
+                                                                                <h6 class="d-inline">@group_cre.Sum(c => c.CreditoAprobado)?.ToString("N2")</h6>
+                                                                            </div>
+                                                                            <div>
+                                                                                <span class="text-muted">Adeudado:</span>
+                                                                                <h6 class="d-inline">@group_cre.Sum(c => c.TotalAdeudado)?.ToString("N2")</h6>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="map-acreedor">
+                        <div class="card latest-update-card border-top-0">
+                            <div class="card-header pt-1 pb-1">
+                                <div class="row">
+                                    <div class="col">
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input show-active-check" type="checkbox" checked>
+                                            <label class="form-check-label" for="show-active-check">Mostrar inactivos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr class="table-info">
+                                            <th class="pl-3">Acreedor / Titular</th>
+                                            <th>RD</th>
+                                            <th>US</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var group in Creditos.GroupBy(c => c.Acreedor).OrderBy(k => k.Key))
+                                        {
+                                            var groups_moneda_temp = group.GroupBy(c => c.Moneda).OrderBy(g => g.Key);
+
+                                            <tr>
+                                                <th class="pl-4">
+                                                    <h6 class="m-0">@group.Key</h6>
+                                                </th>
+
+                                                @foreach (var group_moneda in groups_moneda_temp)
+                                                {
+                                                    <td class="b-none" data-active="@(group_moneda.Sum(c => Convert.ToInt16(c.EsActivo))  > 0)">
+                                                        <div class="d-inline-block">
+                                                            <div>
+                                                                <span class="text-muted">Aprobado:</span>
+                                                                <h6 class="d-inline">@group_moneda.Sum(c => c.CreditoAprobado)?.ToString("N2")</h6>
+                                                            </div>
+                                                            <div>
+                                                                <span class="text-muted">Adeudado:</span>
+                                                                <h6 class="d-inline">@group_moneda.Sum(c => c.TotalAdeudado)?.ToString("N2")</h6>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+
+                                                    if (groups_moneda_temp.Count() == 1)
+                                                    {
+                                                        <td>-</td>
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tcr">
+                        <div class="card border-top-0">
+                            <div class="card-header pt-1 pb-1">
+                                <div class="row">
+                                    <div class="col">
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input show-active-check" type="checkbox" checked>
+                                            <label class="form-check-label" for="show-active-check">Mostrar inactivos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive p-0" style="position:relative;">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr class="table-info">
+                                                <th class="pl-3">Acreedor</th>
+                                                <th>Limite de credito</th>
+                                                <th>Monto adeudado</th>
+                                                <th>Cuota</th>
+                                                <th>Atraso total</th>
+                                                <th>Atraso > 30 dias</th>
+                                                <th>Atraso > 60 dias</th>
+                                                <th>Estado</th>
+                                                <th>Fecha de entrega</th>
+                                                <th>Ultima transacción</th>
+                                                <th>Mes consolidado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var group in Creditos.Where(c => c.GrupoProductos == "TCR").GroupBy(c => c.Moneda))
+                                            {
+                                                <tr class="table-active">
+                                                    <td class="text-primary pl-3" colspan="11"><b>@group.Key</b></td>
+                                                </tr>
+
+                                                @foreach (var credito in group.OrderBy(c => c.EstatusModificado).OrderByDescending(c => c.EsActivo))
+                                                {
+                                                    <tr>
+                                                        <th class="pl-4">@credito.Acreedor</th>
+                                                        <td>@credito.CreditoAprobado?.ToString("N2")</td>
+                                                        <td>@credito.TotalAdeudado?.ToString("N2")</td>
+                                                        <td>@credito.Cuota?.ToString("N2")</td>
+                                                        <td>@credito.AtrasoTotal?.ToString("N2")</td>
+                                                        <td>@credito.VecesMas30Dias @(credito.VecesMas30Dias == 1 ? "vez" : "veces")</td>
+                                                        <td>@credito.VecesMas60Dias @(credito.VecesMas60Dias == 1 ? "vez" : "veces")</td>
+                                                        <td data-active="@credito.EsActivo" style="max-width: 170px;">
+                                                            @GetBadge(credito.EstatusModificado ?? credito.Estatus)
+                                                        </td>
+                                                        <td>@credito.FechaApertura</td>
+                                                        <td>@credito.FechaUltimaTransaccion</td>
+                                                        <td>@credito.MesConsolidado</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pre">
+                        <div class="card border-top-0">
+                            <div class="card-header pt-1 pb-1">
+                                <div class="row">
+                                    <div class="col">
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input show-active-check" type="checkbox" checked>
+                                            <label class="form-check-label" for="show-active-check">Mostrar inactivos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive p-0" style="position:relative;">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr class="table-info">
+                                                <th class="pl-3">Acreedor</th>
+                                                <th>Monto aprobado</th>
+                                                <th>Monto adeudado</th>
+                                                <th>Cuota</th>
+                                                <th>Atraso total</th>
+                                                <th>Atraso > 30 dias</th>
+                                                <th>Atraso > 60 dias</th>
+                                                <th>Estado</th>
+                                                <th>Fecha de apertura</th>
+                                                <th>Ultima transacción</th>
+                                                <th>Mes consolidado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var group in Creditos.Where(c => c.GrupoProductos == "PRE").GroupBy(c => c.Moneda))
+                                            {
+                                                <tr class="table-active">
+                                                    <td class="text-primary pl-3" colspan="11"><b>@group.Key</b></td>
+                                                </tr>
+
+                                                @foreach (var credito in group.OrderBy(c => c.EstatusModificado).OrderByDescending(c => c.EsActivo))
+                                                {
+                                                    <tr>
+                                                        <th class="pl-4">@credito.Acreedor</th>
+                                                        <td>@credito.CreditoAprobado?.ToString("N2")</td>
+                                                        <td>@credito.TotalAdeudado?.ToString("N2")</td>
+                                                        <td>@credito.Cuota?.ToString("N2")</td>
+                                                        <td>@credito.AtrasoTotal?.ToString("N2")</td>
+                                                        <td>@credito.VecesMas30Dias @(credito.VecesMas30Dias == 1 ? "vez" : "veces")</td>
+                                                        <td>@credito.VecesMas60Dias @(credito.VecesMas60Dias == 1 ? "vez" : "veces")</td>
+
+                                                        <td data-active="@credito.EsActivo" style="max-width: 170px;">
+                                                            @GetBadge(credito.EstatusModificado ?? credito.Estatus)
+                                                        </td>
+                                                        <td>@credito.FechaApertura</td>
+                                                        <td>@credito.FechaUltimaTransaccion</td>
+                                                        <td>@credito.MesConsolidado</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="srv">
+                        <div class="card border-top-0">
+                            <div class="card-header pt-1 pb-1">
+                                <div class="row">
+                                    <div class="col">
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input show-active-check" type="checkbox" checked>
+                                            <label class="form-check-label" for="show-active-check">Mostrar inactivos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive p-0" style="position:relative;">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr class="table-info">
+                                                <th class="pl-3">Titular</th>
+                                                <th>Monto aprobado</th>
+                                                <th>Monto adeudado</th>
+                                                <th>Cuota</th>
+                                                <th>Atraso total</th>
+                                                <th>Atraso > 30 dias</th>
+                                                <th>Atraso > 60 dias</th>
+                                                <th>Estado</th>
+                                                <th>Fecha de apertura</th>
+                                                <th>Ultima transacción</th>
+                                                <th>Mes consolidado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var group in Creditos.Where(c => c.GrupoProductos == "SRV").GroupBy(c => c.Moneda))
+                                            {
+                                                <tr class="table-active">
+                                                    <td class="text-primary pl-3" colspan="11"><b>@group.Key</b></td>
+                                                </tr>
+
+                                                @foreach (var credito in group.OrderBy(c => c.EstatusModificado).OrderByDescending(c => c.EsActivo))
+                                                {
+                                                    <tr>
+                                                        <th class="pl-4">@credito.Acreedor</th>
+                                                        <td>@credito.CreditoAprobado?.ToString("N2")</td>
+                                                        <td>@credito.TotalAdeudado?.ToString("N2")</td>
+                                                        <td>@credito.Cuota?.ToString("N2")</td>
+                                                        <td>@credito.AtrasoTotal?.ToString("N2")</td>
+                                                        <td>@credito.VecesMas30Dias @(credito.VecesMas30Dias == 1 ? "vez" : "veces")</td>
+                                                        <td>@credito.VecesMas60Dias @(credito.VecesMas60Dias == 1 ? "vez" : "veces")</td>
+
+                                                        <td data-active="@credito.EsActivo" style="max-width: 170px;">
+                                                            @GetBadge(credito.EstatusModificado ?? credito.Estatus)
+                                                        </td>
+                                                        <td>@credito.FechaApertura</td>
+                                                        <td>@credito.FechaUltimaTransaccion</td>
+                                                        <td>@credito.MesConsolidado</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tel">
+                        <div class="card border-top-0">
+                            <div class="card-header pt-1 pb-1">
+                                <div class="row">
+                                    <div class="col">
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input show-active-check" type="checkbox" checked>
+                                            <label class="form-check-label" for="show-active-check">Mostrar inactivos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive p-0" style="position:relative;">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr class="table-info">
+                                                <th class="pl-3">Acreedor</th>
+                                                <th>Monto aprobado</th>
+                                                <th>Monto adeudado</th>
+                                                <th>Cuota</th>
+                                                <th>Atraso total</th>
+                                                <th>Atraso > 30 dias</th>
+                                                <th>Atraso > 60 dias</th>
+                                                <th>Estado</th>
+                                                <th>Fecha de apertura</th>
+                                                <th>Ultima transacción</th>
+                                                <th>Mes consolidado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var group in Creditos.Where(c => c.GrupoProductos == "TEL").GroupBy(c => c.Moneda))
+                                            {
+                                                <tr class="table-active">
+                                                    <td class="text-primary pl-3" colspan="11"><b>@group.Key</b></td>
+                                                </tr>
+
+                                                @foreach (var credito in group.OrderBy(c => c.EstatusModificado).OrderByDescending(c => c.EsActivo))
+                                                {
+                                                    <tr>
+                                                        <th class="pl-4">@credito.Acreedor</th>
+                                                        <td>@credito.CreditoAprobado?.ToString("N2")</td>
+                                                        <td>@credito.TotalAdeudado?.ToString("N2")</td>
+                                                        <td>@credito.Cuota?.ToString("N2")</td>
+                                                        <td>@credito.AtrasoTotal?.ToString("N2")</td>
+                                                        <td>@credito.VecesMas30Dias @(credito.VecesMas30Dias == 1 ? "vez" : "veces")</td>
+                                                        <td>@credito.VecesMas60Dias @(credito.VecesMas60Dias == 1 ? "vez" : "veces")</td>
+
+                                                        <td data-active="@credito.EsActivo" style="max-width: 170px;">
+                                                            @GetBadge(credito.EstatusModificado ?? credito.Estatus)
+                                                        </td>
+                                                        <td>@credito.FechaApertura</td>
+                                                        <td>@credito.FechaUltimaTransaccion</td>
+                                                        <td>@credito.MesConsolidado</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="analyze">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="m-0">Escenarios de riesgo de incumplimiento futuro</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="position:relative;">
+                            <table id="table-scores" class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td class="text-center border-primary text-primary" style="border-bottom:solid thin;"
+                                            title="El IMAE es positivo, pero inferior al promedio de los ultimos 12 meses.">
+                                            BASE
+                                        </td>
+                                        <td class="text-center border-primary text-primary" style="border-bottom:solid thin;"
+                                            title="El IMAE es positivo, y superior al promedio de los ultimos 12 meses.">
+                                            OPTIMISTA
+                                        </td>
+                                        <td class="text-center border-primary text-primary" style="border-bottom:solid thin;"
+                                            title="El IMAE es negativo.">
+                                            PESIMISTA
+                                        </td>
+                                    </tr>
+                                    <tr class="border-bottom border-muted">
+                                        <th>PROBABILIDAD DE INCUMPLIMIENTO</th>
+                                        <td class="text-center">@((Model.PdBase * 100)?.ToString("N") + "%")</td>
+                                        <td class="text-center">@((Model.PdOptimista * 100)?.ToString("N") + "%")</td>
+                                        <td class="text-center">@((Model.PdPesimista * 100)?.ToString("N") + "%")</td>
+                                    </tr>
+                                    <tr class="border-bottom border-muted">
+                                        <th>INCUMPLIMIENTO ESPERADO</th>
+                                        <td class="text-center">@(Model.DefaultEsperadoBase == 1 ? "SI" : "NO")</td>
+                                        <td class="text-center">@(Model.DefaultEsperadoOptim == 1 ? "SI" : "NO")</td>
+                                        <td class="text-center">@(Model.DefaultEsperadoPesim == 1 ? "SI" : "NO")</td>
+                                    </tr>
+                                    <tr class="border-bottom border-muted">
+                                        <th>SCORE</th>
+                                        <td class="text-center">@(Math.Truncate((decimal)(Model.ScoreBase ?? 0)))</td>
+                                        <td class="text-center">@(Math.Truncate((decimal)(Model.ScoreOptimista ?? 0)))</td>
+                                        <td class="text-center">@(Math.Truncate((decimal)(Model.ScorePesimista ?? 0)))</td>
+                                    </tr>
+                                    <tr class="border-bottom border-muted">
+                                        <th>NIVEL DE RIESGO</th>
+                                        <td class="text-center">@(Model.NivelRiesgoBase)</td>
+                                        <td class="text-center">@(Model.NivelRiesgoOptim)</td>
+                                        <td class="text-center">@(Model.NivelRiesgoPesim)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>CRITERIO</th>
+                                        <td style="max-width:150px;" class="text-center">@ScoreDecisionBase</td>
+                                        <td style="max-width:150px;" class="text-center">@ScoreDecisionOptimista</td>
+                                        <td style="max-width:150px;" class="text-center">@ScoreDecisionPesimista</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5>Decisión Score</h5>
+
+                        <p>@Model.DecisionGanadora</p>
+                        <ul>
+                            <li><i>IMAE interanual tendencia ciclo reciente: <b>@((Model.Imaereciente * 100)?.ToString("N2"))%</b></i></li>
+                            <li><i>IMAE interanual tendencia ciclo promedio ultimos 12 meses: <b>@((Model.Imaeprom12 * 100)?.ToString("N2"))%</b></i></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5>Cumplimiento de limites de politica de credito</h5>
+                        <p>
+                            @if (Model.NumCastigadosActivos == 0)
+                            {
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>No tiene castigos.</span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-times-circle text-danger"></i>
+                                <span>Tiene @Model.NumCastigadosActivos castigos.</span>
+                            }
+                        </p>
+                        <p>
+                            @if (Model.NumAtrasosMas60 == 0)
+                            {
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>No tiene atrasos de mas de 60 dias.</span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-times-circle text-danger"></i>
+                                <span>Tiene @Model.NumAtrasosMas60 atrasos de mas de 60 dias.</span>
+                            }
+                        </p>
+                        <p>
+                            @if (Model.NumPresTarjEnLegal == 0)
+                            {
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>No tiene prestamos ó tarjetas en situacion legal.</span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-times-circle text-danger"></i>
+                                <span>Tiene @Model.NumPresTarjEnLegal prestamos ó tarjetas en situación legal.</span>
+                            }
+                        </p>
+                        <div class="mt-4">
+                            <h5>Criterio respecto a cumplimiento de limites de politicas de creditos:</h5>
+                            @if (Model.FlagLimitesPolitica)
+                            {
+                                <h4 class="text-success mt-3 mb-0">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    Continuar el proceso
+                                </h4>
+                            }
+                            else
+                            {
+                                <h4 class="text-danger mt-3 mb-0">
+                                    <i class="fas fa-times-circle text-danger"></i>
+                                    Se incumple limites, no continuar el proceso
+                                </h4>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5>Analisis cupo de numero de creditos</h5>
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr class="border-bottom border-muted">
+                                        <td>Numero de cuentas abiertas</td>
+                                        <td class="text-center">@Model.NumCreditosActivos</td>
+                                    </tr>
+                                    <tr class="border-bottom border-muted">
+                                        <td>Limite de numero de cuentas abiertas</td>
+                                        <td class="text-center">@Model.LimiteNumCreditosAct</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cupo de numero de creditos</td>
+                                        <td class="text-center">@Model.CupoCredNumCred</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-3">
+                            <h5>Criterio respecto a cupos:</h5>
+                            @if (Model.FlagCupoCreditos)
+                            {
+                                <h4 class="text-success mt-3 mb-0">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    Continuar el proceso
+                                </h4>
+                            }
+                            else
+                            {
+                                <h4 class="text-danger mt-3 mb-0">
+                                    <i class="fas fa-times-circle text-danger"></i>
+                                    Exceso de creditos
+                                </h4>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5>Resumen de decisión crediticia</h5>
+                        <div class="table-responsive">
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                    <tr class="border-bottom border-muted">
+                                        <td>Decisión Score</td>
+                                        @if (Model.FlagDecisionScore)
+                                        {
+                                            <td class="text-right text-success">
+                                                <i class="fas fa-check-circle text-success"></i>
+                                                Pre-Aprobado
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-right text-danger">
+                                                <i class="fas fa-times-circle text-danger"></i>
+                                                Denegado
+                                            </td>
+                                        }
+                                    </tr>
+                                    <tr class="border-bottom border-muted">
+                                        <td>Limites de politica interna</td>
+                                        @if (Model.FlagLimitesPolitica)
+                                        {
+                                            <td class="text-right text-success">
+                                                <i class="fas fa-check-circle text-success"></i>
+                                                Cumplidos
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-right text-danger">
+                                                <i class="fas fa-times-circle text-danger"></i>
+                                                No cumplidos
+                                            </td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>Cupo de numero de creditos</td>
+                                        @if (Model.FlagCupoCreditos)
+                                        {
+                                            <td class="text-right text-success">
+                                                <i class="fas fa-check-circle text-success"></i>
+                                                Disponible
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-right text-danger">
+                                                <i class="fas fa-times-circle text-danger"></i>
+                                                Exceso de creditos
+                                            </td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4 @(DecisionCrediticiaDenegado ? "bg-danger" : "bg-success")">
+                    <div class="card-body text-center">
+
+                        <h1 class="text-white">
+                            @(DecisionCrediticiaDenegado ? "DENEGADO" : "PRE-APROBADO")
+                        </h1>
+                        <h6 class="text-white mb-0">
+                            Decisión crediticia
+                        </h6>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="m-0">Score Riesgo de credito (Escenario base)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart1-container text-center">
+                            <canvas id="statistics-chart-1" class="m-0 d-inline" style="max-height: 250px;max-width: 500px"></canvas>
+                        </div>
+                        <div class="text-center mt-4">
+                            <span style="background-color: #fc0303; padding: 6px;" class="text-white">ALTO</span>&nbsp;
+                            <span style="background-color: #F8D10A; padding: 6px;" class="text-white">MEDIO</span>&nbsp;
+                            <span style="background-color: #148A02; padding: 6px;" class="text-white">BAJO</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="decision">
+                @if (DecisionCrediticiaDenegado)
+                {
+                    <div class="card bg-danger">
+                        <div class="card-body text-center">
+                            <h1 class="text-white">DENEGADO</h1>
+                            <h6 class="text-white mb-0">Decisión crediticia</h6>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="m-0">Informacion historica</h4>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th class="border-0 pl-4">Cupo numero de creditos</th>
+                                        <td colspan="2" class="text-center">@Model.CupoCredNumCred</td>
+                                    </tr>
+                                    <tr class="text-center table-active">
+                                        <th></th>
+                                        <th class="text-primary">RD</th>
+                                        <th class="text-primary">US</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="pl-4">Cuota promedio historica</th>
+                                        <td class="text-center">@Model.CuotaPromTotalExpresDo?.ToString("N2")</td>
+                                        <td class="text-center">@Model.CuotaPromTotalExpresUs?.ToString("N2")</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="pl-4">Cuota promedio historica Prestamos</th>
+                                        <td class="text-center">@Model.CuotaPromPrestamoDo?.ToString("N2")</td>
+                                        <td class="text-center">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="pl-4">Cuota promedio historica Tarjeta</th>
+                                        <td class="text-center">@Model.CuotaPromedioTarjetaDo?.ToString("N2")</td>
+                                        <td class="text-center">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="pl-4">Monto maximo Prestamo</th>
+                                        <td class="text-center">@((Creditos.Where(c => c.GrupoProductos == "PRE" && c.Moneda == "RD").Max(c => c.CreditoAprobado) ?? 0).ToString("N2"))</td>
+                                        <td class="text-center">@((Creditos.Where(c => c.GrupoProductos == "PRE" && c.Moneda == "US").Max(c => c.CreditoAprobado) ?? 0).ToString("N2"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="pl-4">Monto maximo Tarjeta</th>
+                                        <td class="text-center">@((Creditos.Where(c => c.GrupoProductos == "TCR" && c.Moneda == "RD").Max(c => c.CreditoAprobado) ?? 0).ToString("N2"))</td>
+                                        <td class="text-center">@((Creditos.Where(c => c.GrupoProductos == "TCR" && c.Moneda == "US").Max(c => c.CreditoAprobado) ?? 0).ToString("N2"))</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col d-flex align-items-center">
+                                    <h4 class="mb-0">
+                                        <label for="select-producto" class="m-0">Producto</label>
+                                    </h4>
+                                </div>
+                                <div class="col-auto">
+                                    <select id="select-producto" asp-items="Productos" class="form-control"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="datos-producto" class="card-body text-justify p-0">
+                            <h4 class="mb-0 text-muted text-center mt-4 mb-4">Selecciona un producto de la lista.</h4>
+
+                            <div class="d-none table-responsive">
+                                <table class="table mt-0 mb-0">
+                                    <thead>
+                                        <tr class="table-active">
+                                            <th colspan="4" class="pl-4">Definición</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="4" class="definicion pl-4 pr-4"></td>
+                                        </tr>
+                                        <tr class="table-active">
+                                            <th colspan="4" class="pl-4">Condiciones</th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" class="pl-4">Monto minimo</th>
+                                            <td colspan="2" class="monto-min"></td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" class="pl-4">Plazo minimo</th>
+                                            <td colspan="2" class="plazo-min"></td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" class="pl-4">Plazo maximo</th>
+                                            <td colspan="2" class="plazo-max"></td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" class="pl-4">Garantias</th>
+                                            <td colspan="2" class="garantia"></td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" class="pl-4">Comision</th>
+                                            <td colspan="2" class="comision"></td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" class="pl-4">Tasa de interes</th>
+                                            <td colspan="2" class="tasa-interes"></td>
+                                        </tr>
+                                        <tr class="table-active">
+                                            <th colspan="4" class="pl-4">Restricciones</th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="4" class="pl-4">
+                                                @if (Model.CuentaActivaLegal == 0)
+                                                {
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                    <b>No tiene cuentas activas en situación legal.</b>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-times-circle text-danger"></i>
+                                                    <b>Tiene @Model.CuentaActivaLegal cuentas activas en situación legal.</b>
+                                                }
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="4" class="pl-4">
+                                                @if (Model.CuentaCastigUlt24Mes == 0)
+                                                {
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                    <b>No tiene cuentas castigadas los ultimos 24 meses.</b>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-times-circle text-danger"></i>
+                                                    <b>Tiene @Model.CuentaCastigUlt24Mes cuentas castigadas los ultimos 24 meses.</b>
+                                                }
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="4" class="pl-4">
+                                                @if (Model.Mas3Atra30DiasUltMeses == 0)
+                                                {
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                    <b>No ha tenido mas de 30 dias de atraso los ultimos 12 meses.</b>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-times-circle text-danger"></i>
+                                                    <b>Ha tenido @Model.Mas3Atra30DiasUltMeses atrasos de mas de 30 dias los ultimos 12 meses.</b>
+                                                }
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="4" class="pl-4">
+                                                @if (Model.Mas2Atrasos60Dias == 0)
+                                                {
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                    <b>No ha tenido mas de 2 atrasos de mas de 60 dias.</b>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-times-circle text-danger"></i>
+                                                    <b>Ha tenido @Model.Mas2Atrasos60Dias atrasos de mas de 60 dias.</b>
+                                                }
+                                            </th>
+                                        </tr>
+
+                                        <tr class="table-active">
+                                            <th class="pl-4">Condiciones de negociación</th>
+                                            <th>BASE</th>
+                                            <th>INTERMEDIO</th>
+                                            <th>MAXIMO</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="pl-4">Cuota historica (RD)</th>
+                                            <td class="">@Model.CuotaPromedioTotalDo?.ToString("N2")</td>
+                                            <td class="">@Model.CuotaPerc50ExpresDo?.ToString("N2")</td>
+                                            <td class="">@Model.CuotaPerc75ExpresDo?.ToString("N2")</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="pl-4">Plazo</th>
+                                            <td colspan="3">
+                                                <select class="select-plazo form-control">
+                                                    <option value="0" class="text-center">--- Selecciona un plazo ---</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="pl-4">Frecuencia de pago (meses)</th>
+                                            <td colspan="3">
+                                                <select class="select-frecuencia form-control">
+                                                    <option value="1">1</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-primary font-weight-bold table-active">
+                                            <th class="pl-4 border-primary" style="border-top: solid thin">Monto sugerido (RD)</th>
+                                            <td class="monto-sug-base border-primary" style="border-top: solid thin"></td>
+                                            <td class="monto-sug-medio border-primary" style="border-top: solid thin"></td>
+                                            <td class="monto-sug-maximo border-primary" style="border-top: solid thin"></td>
+                                        </tr>
+                                        <tr class="text-primary font-weight-bold table-active">
+                                            <th class="pl-4">Monto sugerido (US)</th>
+                                            <td class="monto-us-sug-base"></td>
+                                            <td class="monto-us-sug-medio"></td>
+                                            <td class="monto-us-sug-maximo"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/chart.js"></script>
+
+    <script>
+        //Mostrar inactivos | switch button
+        $(".show-active-check").on("change", function (ev) {
+            $(this).closest(".card").find("table td[data-active=\"False\"]").each(function () {
+                $(this).parent().css("display", ev.target.checked ? "table-row" : "none");
+            })
+        });
+
+        let producto = null;
+        const box_producto = $("#datos-producto");
+
+        $("#select-producto").on("change", function (ev) {
+            const box = $("#datos-producto");
+
+            fetch('@Url.Action("DatosProducto", "Entity")', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify($(this).val())
+            }).then((response) => {
+                response.json().then(function (json) {
+                    producto = json;
+
+                    box.find("div.d-none").removeClass("d-none");
+                    box.find("> h4").addClass("d-none");
+
+                    box.find(".definicion").text(json.Definicion);
+                    box.find(".monto-min").text(json.MontoMinimo.toLocaleString('en'));
+                    box.find(".plazo-min").text(json.PlazoMinimo);
+                    box.find(".plazo-max").text(json.PlazoMaximo);
+                    box.find(".garantia").text(json.Garantia);
+                    box.find(".comision").text((json.Comision * 100) + "%");
+                    box.find(".tasa-interes").text((json.TasaInteres * 100) + "%");
+
+                    const plazos = Array.from({ length: (json.PlazoMaximo - json.PlazoMinimo) + 1 }, (_, i) => json.PlazoMinimo + i);
+
+                    box.find('.select-plazo').html(plazos.reduce(function (prev, current_num) {
+                        return prev + "<option value='" + current_num + "'>" + current_num + "</option>";
+                    }, ''));
+
+                    //Calculando montos sugeridos.
+                    CalcularSugeridos();
+                })
+            })
+        })
+
+        $("#datos-producto .select-plazo").on("change", CalcularSugeridos);
+        $("#datos-producto .select-frecuencia").on("change", CalcularSugeridos);
+
+        function CalcularSugeridos() {
+            const plazo = box_producto.find(".select-plazo").val();
+            const frecuencia = box_producto.find(".select-frecuencia").val();
+
+            const monto_base = CalcularMontoSugerido(@Model.CuotaPromedioTotalDo, plazo, frecuencia);
+            const monto_medio = CalcularMontoSugerido(@(Model.CuotaPerc50ExpresDo ?? 0), plazo, frecuencia);
+            const monto_maximo = CalcularMontoSugerido(@(Model.CuotaPerc75ExpresDo ?? 0), plazo, frecuencia);
+
+            box_producto.find(".monto-sug-base").text(monto_base.toLocaleString('en'));
+            box_producto.find(".monto-sug-medio").text(monto_medio.toLocaleString('en'));
+            box_producto.find(".monto-sug-maximo").text(monto_maximo.toLocaleString('en'));
+
+            box_producto.find(".monto-us-sug-base").text((monto_base / @Model.TipoDeCambio).toLocaleString('en'));
+            box_producto.find(".monto-us-sug-medio").text((monto_medio / @Model.TipoDeCambio).toLocaleString('en'));
+            box_producto.find(".monto-us-sug-maximo").text((monto_maximo / @Model.TipoDeCambio).toLocaleString('en'));
+
+            //TipoCambio
+        }
+
+        function CalcularMontoSugerido(cuota_historica, plazo, periodicidad) {
+            const monto = (cuota_historica * (1 - (Math.pow((1 + producto.TasaInteres / 12), -(plazo / periodicidad))))) / (producto.TasaInteres / 12);
+
+            return Math.round(monto / 1000) * 1000;
+        }
+
+        //Graficos
+        var scoreRiesgo = "@Model.ScoreBase";
+
+        new Chart(document.getElementById('statistics-chart-1').getContext("2d"), {
+            type: 'doughnut',
+            data: {
+                labels: ["100", "200", "300", "400", "500", "600", "700", "800", "900", "1000"],
+                datasets: [
+                    {
+                        label: 'D0',
+                        data: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000],
+                        backgroundColor: ["#D50000", "#D50000", "#F8D10A", "#F8D10A", "#F8D10A", "#F8D10A", "#F8D10A", "#F8D10A", "#148A02", "#148A02"]
+                    },
+                    {
+                        data: [scoreRiesgo, 1000 - parseInt(scoreRiesgo)],
+                        backgroundColor: ["#000000", "#ffffff"]
+                    }
+                ]
+            },
+            options: {
+                rotation: 270,
+                circumference: 180
+            }
+        });
+
+        const data_years = @Json.Serialize(CreditosPorAño.OrderBy(k => k.Key).Select(g => g.Key.ToString()));
+
+        const data = {
+            AprobadoRD: '@(Json.Serialize(CreditosPorAño.Select(g => new { x = g.Key.ToString(), y = g.Where(x => x.Moneda == "RD").Sum(x => x.CreditoAprobado) })))',
+            AdeudadoRD: '@(Json.Serialize(CreditosPorAño.Select(g => new { x = g.Key.ToString(), y = g.Where(x => x.Moneda == "RD").Sum(x => x.TotalAdeudado) })))',
+            AprobadoUS: '@(Json.Serialize(CreditosPorAño.Select(g => new { x = g.Key.ToString(), y = g.Where(x => x.Moneda == "US").Sum(x => x.CreditoAprobado) })))',
+            AdeudadoUS: '@(Json.Serialize(CreditosPorAño.Select(g => new { x = g.Key.ToString(), y = g.Where(x => x.Moneda == "US").Sum(x => x.TotalAdeudado) })))'
+        }
+
+        const data_count = {
+            AprobadoRD: '@(Json.Serialize(CreditosPorAño.Select(g => new { x = g.Key.ToString(), y = g.Where(x => x.Moneda == "RD").Count() })))',
+            AdeudadoRD: '@(Json.Serialize(CreditosPorAño.Select(g => new { x = g.Key.ToString(), y = g.Where(x => x.Moneda == "RD" && x.TotalAdeudado > 0).Count() })))',
+            AprobadoUS: '@(Json.Serialize(CreditosPorAño.Select(g => new { x = g.Key.ToString(), y = g.Where(x => x.Moneda == "US").Count() })))',
+            AdeudadoUS: '@(Json.Serialize(CreditosPorAño.Select(g => new { x = g.Key.ToString(), y = g.Where(x => x.Moneda == "US" && x.TotalAdeudado > 0).Count() })))'
+        }
+
+        new Chart($('#map-chart')[0].getContext("2d"), {
+            type: 'bar',
+            data: {
+                labels: data_years,
+                datasets: [
+                    {
+                        label: 'Aprobado (RD)',
+                        data: JSON.parse(data.AprobadoRD),
+                        borderColor: "rgb(38,180,255)",
+                        backgroundColor: "rgba(38,180,255, 0.2)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Adeudado (RD)',
+                        data: JSON.parse(data.AdeudadoRD),
+                        borderColor: "rgb(217,83,79)",
+                        backgroundColor: "rgba(217,83,79, 0.2)",
+                        borderWidth: 1
+                    }/*,
+                                                                                                        {
+                                                                                                            label: 'Aprobado (US)',
+                                                                                                            data: JSON.parse(data.AprobadoUS),
+                                                                                                            borderColor: "rgb(38,180,255)",
+                                                                                                            backgroundColor: "rgba(38,180,255,0.7)",
+                                                                                                            borderWidth: 1
+                                                                                                        },
+                                                                                                        {
+                                                                                                            label: 'Adeudado (US)',
+                                                                                                            data: JSON.parse(data.AdeudadoUS),
+                                                                                                            borderColor: "rgb(217,83,79)",
+                                                                                                            backgroundColor: "rgba(217,83,79,0.7)",
+                                                                                                            borderWidth: 1
+                                                                                                        }*/
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Montos Aprobados vs Adeudados',
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart($('#map-chart-us')[0].getContext("2d"), {
+            type: 'bar',
+            data: {
+                labels: data_years,
+                datasets: [
+                    {
+                        label: 'Aprobado (US)',
+                        data: JSON.parse(data.AprobadoUS),
+                        borderColor: "rgb(38,180,255)",
+                        backgroundColor: "rgba(38,180,255,0.7)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Adeudado (US)',
+                        data: JSON.parse(data.AdeudadoUS),
+                        borderColor: "rgb(217,83,79)",
+                        backgroundColor: "rgba(217,83,79,0.7)",
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Montos Aprobados vs Adeudados (US)',
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart($('#map-chart-count')[0].getContext("2d"), {
+            type: 'bar',
+            data: {
+                labels: data_years,
+                datasets: [
+                    {
+                        label: 'Aprobados (RD)',
+                        data: JSON.parse(data_count.AprobadoRD),
+                        borderColor: "rgb(38,180,255)",
+                        backgroundColor: "rgba(38,180,255, 0.2)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Adeudados (RD)',
+                        data: JSON.parse(data_count.AdeudadoRD),
+                        borderColor: "rgb(217,83,79)",
+                        backgroundColor: "rgba(217,83,79, 0.2)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Aprobados(US)',
+                        data: JSON.parse(data_count.AprobadoUS),
+                        borderColor: "rgb(38,180,255)",
+                        backgroundColor: "rgba(38,180,255,0.7)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Adeudados (US)',
+                        data: JSON.parse(data_count.AdeudadoUS),
+                        borderColor: "rgb(217,83,79)",
+                        backgroundColor: "rgba(217,83,79,0.7)",
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Cantidad de creditos Aprobados vs Adeudados',
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
+}

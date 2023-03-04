@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Layouts/_MainLayout.cshtml";
+}
+
+<!-- [ Pre-loader ] start -->
+<div class="loader-bg">
+    <div class="loader-track">
+        <div class="loader-fill"></div>
+    </div>
+</div>
+<!-- [ Pre-loader ] End -->
+<!-- [ Mobile header ] start -->
+<div class="pc-mob-header pc-header">
+    <div class="pcm-logo">
+        <h4 class="text-white ml-3">SHAR 3000 / Gestión</h4>
+    </div>
+    <div class="pcm-toolbar">
+        <a href="#!" class="pc-head-link" id="mobile-collapse">
+            <div class="hamburger hamburger--arrowturn">
+                <div class="hamburger-box">
+                    <div class="hamburger-inner"></div>
+                </div>
+            </div>
+        </a>
+        <a href="#!" class="pc-head-link" id="header-collapse">
+            <i data-feather="more-vertical"></i>
+        </a>
+    </div>
+</div>
+<!-- [ Mobile header ] End -->
+<!-- [ navigation menu ] start -->
+<nav class="pc-sidebar ">
+    <div class="navbar-wrapper">
+        <div class="m-header">
+            <a href="index.html" class="b-brand">
+                <h4 class="text-white">SHAR 3000 / Gestión</h4>
+            </a>
+        </div>
+        <div class="navbar-content">
+            @await Html.PartialAsync("Layouts/Partials/_LayoutSidenav")
+        </div>
+    </div>
+</nav>
+<!-- [ navigation menu ] end -->
+<!-- [ Header ] start -->
+<header class="pc-header ">
+    <div class="header-wrapper">
+        <div class="ml-auto">
+            <ul class="list-unstyled">
+                <li class="dropdown pc-h-item">
+                    <a class="pc-head-link dropdown-toggle arrow-none mr-0" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <i class="material-icons-two-tone">search</i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right pc-h-dropdown drp-search">
+                        <form class="px-3">
+                            <div class="form-group mb-0 d-flex align-items-center">
+                                <i data-feather="search"></i>
+                                <input type="search" class="form-control border-0 shadow-none" placeholder="Search here. . .">
+                            </div>
+                        </form>
+                    </div>
+                </li>
+                <li class="dropdown pc-h-item">
+                    <a class="pc-head-link dropdown-toggle mr-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <span>
+                            <span class="user-name">Usuario</span>
+                            <span class="user-desc">@User.Identity.Name</span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right pc-h-dropdown">
+                        <a class="dropdown-item" href="~/Identity/Account/Manage">
+                            <i class="material-icons-two-tone">person</i>
+                            Mi perfil
+                        </a>
+                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="~/Home/Index">
+                            <button type="submit" class="nav-link btn btn-link text-dark dropdown-item">
+                                <i class="material-icons-two-tone">chrome_reader_mode</i>
+                                <span>Cerrar sesión</span>
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</header>
+<!-- [ Header ] end -->
+<!-- [ Main Content ] start -->
+<div class="pc-container">
+    <div class="pcoded-content">
+        <!-- [ Main Content ] start -->
+        <div class="row" style="padding-bottom: 70px">
+            @RenderBody()
+        </div>
+        <!-- [ Main Content ] end -->
+        @await Html.PartialAsync("Layouts/Partials/_LayoutFooter")
+    </div>
+</div>
+
+@section Styles {
+    @RenderSection("Styles", required: false)
+}
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

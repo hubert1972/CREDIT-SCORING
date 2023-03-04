@@ -1,0 +1,43 @@
+@using Microsoft.AspNetCore.Identity;
+@using UI.WEB.Areas.Identity.Pages.Account.Manage;
+@using UI.WEB.Constantes;
+@using UI.WEB.Data;
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var user = ViewData["CurrentUser"] as ApplicationUser;
+    var loggedUser = await SignInManager.UserManager.GetUserAsync(User);
+
+    string query = "";
+    if (user != null)
+        query = (user != null && user != loggedUser) ? "?userId=" + user.Id : "";
+}
+
+<div class="card">
+    <div class="card-body p-3">
+        <h6 class="d-inline">Usuario: </h6> @((user ?? loggedUser).UserName)
+    </div>
+</div>
+
+<div class="card mt-3 mb-3">
+    <div class="card-body p-2">
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" href="@("/Identity/Account/Manage" + query)">Datos basicos</a></li>
+
+            @if (User.IsInRole(RolesDefinition.Administrator))
+            {
+                <li class="nav-item"><a class="nav-link @ManageNavPages.ConsultDataNavClass(ViewContext)" id="profile" href="@("/Identity/Account/Manage/ConsultData" + query)">Datos de consulta</a></li>
+            }
+
+            @if (string.IsNullOrEmpty(query))
+            {
+                <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" href="@("/Identity/Account/Manage/ChangePassword")">Cambio de clave</a></li>
+            }
+
+            @if (User.IsInRole(RolesDefinition.Administrator))
+            {
+                <li class="nav-item"><a class="nav-link @ManageNavPages.RolesNavClass(ViewContext)" id="profile" href="@("/Identity/Account/Manage/Roles" + query)">Roles</a></li>
+            }
+        </ul>
+    </div>
+</div>
+

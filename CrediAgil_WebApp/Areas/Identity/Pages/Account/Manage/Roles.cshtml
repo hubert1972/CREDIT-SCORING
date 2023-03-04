@@ -1,0 +1,163 @@
+﻿@page
+@model RolesModel
+@{
+    ViewData["Title"] = "Gestion de roles";
+    ViewData["ActivePage"] = ManageNavPages.Roles;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h4 class="m-0">@ViewData["Title"]</h4>
+            </div>
+            <div class="col-auto">
+                @Html.AntiForgeryToken()
+                <button id="save-button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header p-2">
+                <h5 class="text-center m-0">Roles actuales</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul id="current-roles" class="list-unstyled sortable-list m-0" style="min-height: 55px">
+                    @foreach (var rol in Model.CurrentRoles)
+                    {
+                        <li class="p-0" data-sort-id="@rol.Id">
+
+                            <div class="list-group-item d-flex flex-grow-1 align-items-center">
+                                <span class="fas fa-grip-lines-vertical align-self-center text-muted sort-handle"></span>
+
+                                <div class="d-flex flex-wrap flex-grow-1">
+                                    <div class="mt-auto mb-auto me-auto">
+                                        <div class="fw-bold">@rol.DisplayName</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header p-2">
+                <h5 class="text-center m-0">Roles disponibles</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul id="available-roles" class="list-unstyled sortable-list m-0" style="min-height:55px">
+                    @foreach (var rol in Model.AvailableRoles)
+                    {
+                        <li class="p-0" data-sort-id="@rol.Id">
+
+                            <div class="list-group-item d-flex flex-grow-1 align-items-center">
+                                <span class="fas fa-grip-lines-vertical align-self-center text-muted sort-handle"></span>
+
+                                <div class="d-flex flex-wrap flex-grow-1">
+                                    <div class="mt-auto mb-auto me-auto">
+                                        <div class="fw-bold">@rol.DisplayName</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    <style>
+        .sortable-list .list-group-item {
+            padding: 16.66667px 25px 16.66667px 0;
+            cursor: move;
+            cursor: -webkit-grabbing;
+            user-select: none;
+        }
+
+            .sortable-list .list-group-item .sort-handle {
+                padding: 0 1rem;
+            }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="~/js/Sortable.min.js"></script>
+    <script src="~/vendor/js/sweetalert2.all.min.js"></script>
+
+    <script>
+        new Sortable($("#available-roles")[0], {
+            animation: 150,
+            fallbackOnBody: true,
+            swapThreshold: 0.65,
+            dataIdAttr: 'data-sort-id',
+            group: 'nested'
+        })
+
+        new Sortable($("#current-roles")[0], {
+            animation: 150,
+            fallbackOnBody: true,
+            swapThreshold: 0.65,
+            dataIdAttr: 'data-sort-id',
+            group: 'nested'
+        })
+
+        $("#save-button").on('click', function (ev) {
+            const btn = $(this).attr('disabled', '');
+
+            var jqxhr = $.ajax({
+                url: "@Url.Action()",
+                type: "POST",
+                data: {
+                    userId: "@Model.QueryUser.Id",
+                    sort: Sortable.get($("#current-roles")[0]).toArray()
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                }
+            });
+
+            jqxhr.done(function (data) {
+                if (data.Success){
+                    ShowSweetAlert('success', "Guardado correctamente")
+                    location.reload();
+                }  
+            });
+            jqxhr.fail(function (data, textStatus) { });
+            jqxhr.always(function (data, textStatus, jqXhr) {
+                btn.attr("disabled", null);
+            });
+        })
+
+        function ShowSweetAlert(type, title) {
+            Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            }).fire({
+                icon: type, title: title
+            })
+        }
+
+    </script>
+}

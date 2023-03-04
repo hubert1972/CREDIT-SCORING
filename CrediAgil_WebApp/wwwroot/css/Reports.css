@@ -1,0 +1,57 @@
+﻿
+/***********************************
+    Default Device
+***********************************/
+.text-header-rep {
+    font-size: 24px;
+    color: #5392ca;
+}
+
+.filterheader {
+    text-align: center;
+}
+
+.local-currency-filer {
+    font-size: 16px;
+    color: darkblue;
+}
+
+.dollar-currency-filer {
+    font-size: 16px;
+    color: forestgreen;
+}
+
+
+.header-cointaner {
+    padding: 12px;
+    background-color: white;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.m-auto {
+    margin: auto;
+}
+
+.text-filter {
+    font-size: 16px;
+}
+
+
+.currency-info {
+    padding: 12px;
+    font-family: helvetica;
+    font-size: 14px;
+}
+
+
+@media (max-width: 480px) {
+    .text-header-rep {
+        font-size: 16px;
+    }
+
+    .text-filter {
+        display: none;
+    }
+}

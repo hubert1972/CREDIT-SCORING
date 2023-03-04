@@ -1,0 +1,166 @@
+@page
+@using UI.WEB.Areas.Identity.Pages.Account.Manage;
+@model IndexModel
+@{
+    ViewData["Title"] = "Informacion basica";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="m-0">@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.FirstName"></label>
+                        <input asp-for="Input.FirstName" class="form-control" />
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.LastName"></label>
+                        <input asp-for="Input.LastName" class="form-control" />
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.PhoneNumber"></label>
+                        <input asp-for="Input.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.PhoneNumberAlt"></label>
+                        <input asp-for="Input.PhoneNumberAlt" class="form-control" />
+                        <span asp-validation-for="Input.PhoneNumberAlt" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control email-val" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.Sucursal"></label>
+                        <select asp-for="Input.Sucursal"
+                                asp-items="@Model.Sucursales" class="form-control">
+                        </select>
+                        <span asp-validation-for="Input.Sucursal" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.Cargo"></label>
+                        <select asp-for="Input.Cargo"
+                                asp-items="@Model.Cargos" class="form-control">
+                        </select>
+                        <span asp-validation-for="Input.Cargo" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.State"></label>
+                <select asp-for="Input.State"
+                        asp-items="@Model.States" class="form-control">
+                </select>
+                <span asp-validation-for="Input.State" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-auto">
+                    <button id="update-profile-button" type="submit" class="btn btn-primary">Guardar</button>
+                    <a class="btn btn-success reset-pass">Restablecer clave</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="card info-pass" style="display:none;">
+    <div class="card-body">
+        <h4>La nueva clave generada es: <input type="text" class="nueva-clave" /></h4>
+    </div>
+</div>
+
+
+@section Scripts {
+
+<partial name="_ValidationScriptsPartial" />
+<script src="~/vendor/js/sweetalert2.all.min.js"></script>
+
+<script>
+
+    $(document).ready(function(){
+
+        $('.reset-pass').click(function(){
+
+            let email = $('.email-val').val();
+
+            if(email == ""){
+                ShowSweetAlert('info', "El usuario debe tener asociado un correo.");
+                return;
+            }
+
+            var jqxhr = $.ajax({
+                url: "@Url.Action("ResetPassword","Settings")",
+                type: "POST",
+                data: {
+                    "email" : email
+                }
+            });
+            jqxhr.done(function (data) {
+                if (data.Success) {
+                    $('.nueva-clave').val(data.NewPass);
+                    $('.info-pass').show();
+                }
+                else{
+                    ShowSweetAlert('error', data.Message);
+                }
+            });
+            jqxhr.fail(function (data, textStatus) { });
+            jqxhr.always(function (data, textStatus, jqXhr) { });
+        });
+
+    });
+
+    function ShowSweetAlert(type, title) {
+            Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 15 * 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            }).fire({
+                icon: type, title: title
+            })
+        }
+
+</script>
+
+}

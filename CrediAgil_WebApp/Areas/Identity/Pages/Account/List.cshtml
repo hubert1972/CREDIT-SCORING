@@ -1,0 +1,173 @@
+﻿@page
+@using UI.WEB.Data;
+@model ListModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12 col-md">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <span class="fas fa-search"></span>
+                    </span>
+                    <input id="search-text" type="text" class="form-control" placeholder="Buscar por nombre" value="@Model.UrlParameterSearch" />
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-auto">
+                <button id="search-btn" class="btn btn-primary" style="white-space: nowrap">
+                    <span class="fas fa-search mr-1"></span>
+                    Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="users-list" class="card table-card p-0 mt-4">
+    <div class="card-header pt-3 pb-3">
+        <div class="row">
+            <div class="col">
+                <h5 class="mt-2">Registro de usuarios (Mostrando @(Model.PaginationStart + 1)-@(Model.PaginationStart + Model.PaginationQuote) registros de @Model.PaginationTotal)</h5>
+            </div>
+            <div class="col-auto">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="state-check" checked>
+                    <label class="form-check-label" for="state-check">Mostrar solo activos</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body pb-0">
+        <div class="table-responsive">
+            <table class="table table-hover sortable">
+                <thead>
+                    <tr>
+                        <th class="text-nowrap">
+                            Nombre completo
+                        </th>
+                        <th class="text-nowrap">Usuario</th>
+                        <th class="text-nowrap">Sucursal</th>
+                        <th class="text-nowrap">Cargo</th>
+                        <th class="text-end text-nowrap">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr class="@(user.IsActive ? "" : "d-none")" data-active="@user.IsActive"
+                        onclick="window.location.href='/Identity/Account/Manage@(Model.CurrentUser.Id != user.Id ? ("?userId=" + user.Id) : "")';">
+                            <td>@user.FullName</td>
+                            <td>@user.Nickname</td>
+                            <td>@user.Sucursal</td>
+                            <td>@user.Cargo</td>
+                            <td>
+                                <label class='badge @(user.IsActive ? "bg-success": "bg-danger")' style='max-width: 100%; overflow: hidden; text-overflow: ellipsis'>@(user.IsActive ? "Activo" : "Inactivo")</label>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0">
+                <li class="page-item flex-grow-1 @(Model.PaginationStart == 0 ? "disabled" : "")">
+                    <a class="page-link p-2 pl-3" href="?start=@(Model.PaginationStart - Model.PaginationQuote)&@Model.UrlQuery" tabindex="-1">« Anterior</a>
+                </li>
+
+                @{
+                    int temp = 0;
+                    double total_pages = Math.Ceiling((double)Model.PaginationTotal / (double)Model.PaginationQuote);
+                    long current_page = Model.PaginationStart / Model.PaginationQuote;
+                    bool first_ellipsis = false, second_ellipsis = false;
+                    while (temp < total_pages)
+                    {
+                        if (temp == 0 || temp == total_pages - 1 || temp == current_page || (temp >= current_page - 2 && temp <= current_page + 2))
+                        {
+                            <li class="page-item flex-grow-1 text-center @(current_page == temp ? "active" : "")">
+                                <a class="page-link p-2" href="?start=@(temp * Model.PaginationQuote)&@Model.UrlQuery">@(temp + 1)</a>
+                            </li>
+
+                        }
+                        else if (!first_ellipsis && temp < current_page - 2)
+                        {
+                            <li class="page-item flex-grow-1 text-center disabled">
+                                <a class="page-link p-2" href="#">...</a>
+                            </li>
+                            first_ellipsis = true;
+                        }
+                        else if (!second_ellipsis && temp > current_page + 2)
+                        {
+                            <li class="page-item flex-grow-1 text-center disabled">
+                                <a class="page-link p-2" href="#">...</a>
+                            </li>
+                            second_ellipsis = true;
+                        }
+
+                        temp++;
+                    }
+                }
+                <li class="page-item flex-grow-1 text-right @(Model.PaginationStart + Model.PaginationQuote >= Model.PaginationTotal ? "disabled" : "")">
+                    <a class="page-link p-2 pr-3" href="?start=@(Model.PaginationStart + Model.PaginationQuote)&@Model.UrlQuery">Siguiente »</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+@section Styles{
+    <style>
+        table.sortable thead th {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .table td {
+            white-space: nowrap;
+        }
+
+        .table tr{
+            cursor: pointer;
+        }
+    </style>
+}
+
+@section Scripts{
+    <script src="~/vendor/js/moment.min.js"></script>
+    <script src="~/vendor/js/bootstrap-sortable.js"></script>
+
+    <script>
+        $.bootstrapSortable({ applyLast: false });
+
+        const table = $('#users-list table.sortable');
+        table.find('.nosort').append($('<i>', { class: 'fas fa-sort ml-1' }));
+
+        table.parent().on('sorted', function () {
+            const sorted = table.find('.sorted');
+
+            table.find('.nosort i').remove();
+            table.find('.nosort').append($('<i>', { class: 'fas fa-sort ml-1' }));
+            sorted.find('i').remove();
+            sorted.find('.sign.arrow.up').addClass('fas').addClass('fa-sort-up').addClass('ml-1').css('font-size', '18px');
+            sorted.find('.sign.arrow').addClass('fas').addClass('fa-sort-down').addClass('ml-1').css('font-size', '18px');
+        });
+
+        $("#search-btn").on('click', function () {
+            const value = $("#search-text").val().trim();
+            location.href = '?search=' + value;
+        })
+
+        $("#state-check").on("change", function (ev) {
+            $(this).closest(".card").find("table tr[data-active=\"False\"]").each(function () {
+                if (ev.target.checked)
+                    $(this).addClass('d-none');
+                else
+                    $(this).removeClass('d-none');
+            })
+        });
+    </script>
+}

@@ -1,0 +1,218 @@
+@using UI.WEB.Constantes;
+
+<ul class="pc-navbar">
+    <li class="pc-item pc-caption">
+        <label>Navegacion</label>
+    </li>
+    <li class="pc-item">
+        <a asp-controller="Home" asp-action="Index" class="pc-link">
+            <span class="pc-micon"><i class="material-icons-two-tone">home</i></span><span class="pc-mtext">Inicio</span>
+        </a>
+    </li>
+    <li class="pc-item pc-caption">
+        <label>Consultas</label>
+        <span>Data Credit</span>
+    </li>
+
+    <li class="pc-item">
+        <a href="https://datacredito.com.do/" target="_blank" class="pc-link">
+            <span class="pc-micon"><i class="material-icons-two-tone">history</i></span><span class="pc-mtext">Data Credito</span>
+        </a>
+    </li>
+
+    @if (User.IsInRole(RolesDefinition.Administrator) || User.IsInRole(RolesDefinition.Gerente) || User.IsInRole(RolesDefinition.Consult))
+    {
+        <li class="pc-item">
+            <a asp-controller="Consult" asp-action="Individual" class="pc-link">
+                <span class="pc-micon"><i class="material-icons-two-tone">person_search</i></span><span class="pc-mtext">Individual</span>
+            </a>
+        </li>
+        <li class="pc-item">
+            <a asp-controller="Consult" asp-action="Massive" class="pc-link">
+                <span class="pc-micon"><i class="material-icons-two-tone">groups</i></span><span class="pc-mtext">Masiva</span>
+            </a>
+        </li>
+    }
+
+    <li class="pc-item">
+        <a asp-controller="Consult" asp-action="History" class="pc-link">
+            <span class="pc-micon"><i class="material-icons-two-tone">history</i></span><span class="pc-mtext">Historial</span>
+        </a>
+    </li>
+
+    @if (User.IsInRole(RolesDefinition.Administrator))
+    {
+        <li class="pc-item pc-caption">
+            <label>Parametrizacion</label>
+            <span>Ajustes de la aplicacion</span>
+        </li>
+        <li class="pc-item">
+            <a asp-controller="Settings" asp-action="General" class="pc-link">
+                <span class="pc-micon"><i class="material-icons-two-tone">settings</i></span><span class="pc-mtext">General</span>
+            </a>
+        </li>
+
+        <li class="pc-item pc-caption">
+            <label>Control de acceso</label>
+            <span>Usuarios y roles</span>
+        </li>
+        <li class="pc-item pc-hasmenu">
+            <a href="#!" class="pc-link">
+                <span class="pc-micon"><i class="material-icons-two-tone">people</i></span>
+                <span class="pc-mtext">Usuarios</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+            </a>
+            <ul class="pc-submenu">
+                <li class="pc-item">
+                    <a href="/Identity/Account/Register" class="pc-link">
+                        Agregar nuevo
+                    </a>
+                </li>
+                <li class="pc-item">
+                    <a href="/Identity/Account/List" class="pc-link">
+                        Ver Lista
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
+
+    <!--
+        <li class="pc-item pc-caption">
+        <label>Reportes</label>
+    </li>
+    <li class="pc-item">
+        <a asp-controller="Reports" asp-action="Index" class="pc-link">
+            <span class="pc-micon"><i class="material-icons-two-tone">analytics</i></span><span class="pc-mtext">Reportes gerenciales</span>
+        </a>
+    </li>
+
+    <li class="pc-item pc-caption">
+        <label>Matriz de riesgo</label>
+    </li>
+
+    <li class="pc-item pc-hasmenu">
+        <a href="#!" class="pc-link">
+            <span class="pc-micon"><i class="material-icons-two-tone">pie_chart</i></span>
+            <span class="pc-mtext">Historicas</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+        </a>
+        <ul class="pc-submenu">
+            <li class="pc-item">
+                <a asp-controller="Entity" asp-action="MatrizTransicion" class="pc-link">
+                    Matriz Hist&oacute;rica por numero de clientes
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="HistoricaEnPorcentaje" class="pc-link">
+                    Matriz Hist&oacute;rica por numero de clientes en Porcentaje
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="TransicionPorMonto" class="pc-link">
+                    Matriz Hist&oacute;rica por Monto
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="HistoricaPorMontoPorcentaje" class="pc-link">
+                    Matriz Hist&oacute;rica por Monto en porcentaje
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="ClasificacionCrediticia" class="pc-link">
+                    Matriz Hist&oacute;rica por numero de clientes y clasificacion
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="ClasificacionCrediticiaPorcentaje" class="pc-link">
+                    Matriz Hist&oacute;rica por numero de clientes y clasificacion en porcentaje
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="ClasificacionCrediticiaMonto" class="pc-link">
+                    Matriz Historica por monto y por clasificacion
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="CrediticiaEnPorcentaje" class="pc-link">
+                    Matriz Historica por monto y por clasificacion en porcentaje
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="pc-item pc-hasmenu">
+        <a href="#!" class="pc-link">
+            <span class="pc-micon"><i class="material-icons-two-tone">show_chart</i></span>
+            <span class="pc-mtext">De probabilidad</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+        </a>
+        <ul class="pc-submenu">
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="ProbabilidadClasificacion" class="pc-link">
+                    Matriz de probabilidad por Clasificacion
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="ProbabilidadAnti" class="pc-link">
+                    Matriz de probabilidad por Antig&uacute;edad
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="pc-item pc-hasmenu">
+        <a href="#!" class="pc-link">
+            <span class="pc-micon"><i class="material-icons-two-tone">bar_chart</i></span>
+            <span class="pc-mtext">Reportes</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+        </a>
+        <ul class="pc-submenu">
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="DeterioroPorAntiguedad" class="pc-link">
+                    Deterioro por Antig&uacute;edad
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="DeterioriClasificacionCreditiia" class="pc-link">
+                    Deterioro por Clasificaci&oacute;n
+                </a>
+            </li>
+            <li class="pc-item">
+                <a asp-controller="Matrix" asp-action="ExposicionPerdida" class="pc-link">
+                    Exposici&oacute;n a Perdida
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li class="pc-item pc-hasmenu">
+        <a href="#!" class="pc-link"><span class="pc-micon"><i class="material-icons-two-tone">list_alt</i></span><span class="pc-mtext">Menu levels</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+        <ul class="pc-submenu">
+            <li class="pc-item"><a class="pc-link" href="#!">Menu Level 2.1</a></li>
+            <li class="pc-item pc-hasmenu">
+                <a href="#!" class="pc-link">Menu level 2.2<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                <ul class="pc-submenu">
+                    <li class="pc-item"><a class="pc-link" href="#!">Menu level 3.1</a></li>
+                    <li class="pc-item"><a class="pc-link" href="#!">Menu level 3.2</a></li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">Menu level 3.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="#!">Menu level 4.1</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Menu level 4.2</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="pc-item pc-hasmenu">
+                <a href="#!" class="pc-link">Menu level 2.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                <ul class="pc-submenu">
+                    <li class="pc-item"><a class="pc-link" href="#!">Menu level 3.1</a></li>
+                    <li class="pc-item"><a class="pc-link" href="#!">Menu level 3.2</a></li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">Menu level 3.3<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="#!">Menu level 4.1</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Menu level 4.2</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    -->
+</ul>

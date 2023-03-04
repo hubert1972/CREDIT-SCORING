@@ -1,0 +1,135 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>@ViewData["Title"] - Credit Scoring 3000</title>
+
+    <!--[if lt IE 11]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="Score">
+    <meta name="keywords" content="Credit Score">
+    <meta name="author" content="Ing. Castillo">
+
+
+    <!-- Favicon icon -->
+    <!--<link rel="icon" href="assets/images/favicon.svg" type="image/x-icon">-->
+    <!-- font css -->
+    <link rel="stylesheet" href="~/vendor/fonts/feather.css">
+    <link rel="stylesheet" href="~/vendor/fonts/fontawesome.css">
+    <link rel="stylesheet" href="~/vendor/fonts/material.css">
+
+    <!-- vendor css -->
+    <link rel="stylesheet" href="~/vendor/css/style.css" id="main-style-link">
+
+    <style>
+        .pc-header{
+            top: 0;
+        }
+
+        .card{
+            margin: 0;
+        }
+
+            .nav-tabs .nav-link:not(.active), .nav-pills .nav-link:not(.active) {
+                color: #8c8e90;
+            }
+
+                .nav-tabs .nav-link:not(.active):hover, .nav-tabs .nav-link:not(.active):focus, .nav-pills .nav-link:not(.active):hover, .nav-pills .nav-link:not(.active):focus {
+                    color: #4E5155;
+                }
+
+                .table{
+                    margin: 0;
+                }
+
+                .table td, .table th{
+                    vertical-align: top;
+                    white-space: normal;
+                }
+
+        @@media (max-width: 1024px){
+            .pc-header .pc-head-link .user-desc, .pc-header .pc-head-link .user-name {
+                display: block;
+            }
+        }
+    </style>
+
+    @RenderSection("Styles", required: false)
+
+</head>
+<body class="">
+
+    @RenderBody()
+
+
+    <!-- [ Main Content ] end -->
+    <!-- Warning Section start -->
+    <!-- Older IE warning message -->
+    <!--[if lt IE 11]>
+        <div class="ie-warning">
+            <h1>Warning!!</h1>
+            <p>You are using an outdated version of Internet Explorer, please upgrade
+               <br/>to any of the following web browsers to access this website.
+            </p>
+            <div class="iew-container">
+                <ul class="iew-download">
+                    <li>
+                        <a href="http://www.google.com/chrome/">
+                            <img src="assets/images/browser/chrome.png" alt="Chrome">
+                            <div>Chrome</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.mozilla.org/en-US/firefox/new/">
+                            <img src="assets/images/browser/firefox.png" alt="Firefox">
+                            <div>Firefox</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://www.opera.com">
+                            <img src="assets/images/browser/opera.png" alt="Opera">
+                            <div>Opera</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.apple.com/safari/">
+                            <img src="assets/images/browser/safari.png" alt="Safari">
+                            <div>Safari</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+                            <img src="assets/images/browser/ie.png" alt="">
+                            <div>IE (11 & above)</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <p>Sorry for the inconvenience!</p>
+        </div>
+    <![endif]-->
+    <!-- Warning Section Ends -->
+    <!-- Required Js -->
+    <script src="~/vendor/js/vendor-all.min.js"></script>
+    <script src="~/vendor/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/js/feather.min.js"></script>
+    <script src="~/vendor/js/pcoded.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script> -->
+    <!-- <script src="assets/js/plugins/clipboard.min.js"></script> -->
+    <!-- <script src="assets/js/uikit.min.js"></script> -->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

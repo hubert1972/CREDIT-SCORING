@@ -1,0 +1,233 @@
+﻿@using UI.WEB.Models
+@model UI.WEB.Models.ClientesV[]
+
+@{
+    ViewData["Title"] = "Historial de consultas";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="mb-3">
+            Filtros
+        </h5>
+
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">
+                        <span class="fas fa-calendar"></span>
+                    </span>
+                    <input type="text" class="form-control" name="daterange" value="" />
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">
+                        <span class="fas fa-search"></span>
+                    </span>
+                    <input id="search-text" type="text" class="form-control" placeholder="Buscar por cedula o nombre" value="@ViewBag.Search" />
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-12 text-right">
+                <button id="search-btn" class="btn btn-primary" style="white-space: nowrap">
+                    <span class="fas fa-search mr-1"></span>
+                    Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="query-history" class="card table-card p-0 mt-4">
+    <div class="card-header pt-3 pb-3">
+        <div class="row">
+            <div class="col">
+                <h5 class="mt-2">Registro de consultas (Mostrando @(ViewBag.Start + 1)-@(ViewBag.Start + ViewBag.Quote) registros de @ViewBag.Total)</h5>
+            </div>
+            <div class="col-auto">
+                <a class="btn btn-sm btn-success" href="@Url.Action("HistoryToExcel")?@ViewBag.Query" download="">
+                    <span class="fas fa-file-excel text-white mr-1"></span>
+                    Exportar a excel
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body pb-0">
+        <div class="table-responsive">
+            <table class="table table-hover sortable">
+                <thead>
+                    <tr>
+                        <th class="text-nowrap" data-defaultsort="desc" data-dateformat="DD-MMM-YYYY" title="Fecha en que se realizo la consulta">
+                            Fecha
+                        </th>
+                        <th class="text-nowrap">Cedula</th>
+                        <th class="text-nowrap">Nombre</th>
+                        <th class="text-nowrap">Score</th>
+                        <th class="text-nowrap">Decisión Score</th>
+                        <th class="text-nowrap">Limites de politica interna</th>
+                        <th class="text-nowrap">Cupo de creditos</th>
+                        <th class="text-end text-nowrap">Decisión crediticia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in Model)
+                    {
+                        <tr>
+                            <td title="@cliente.FechaCreacion.ToLongTimeString()">@cliente.FechaCreacion.ToShortDateString()</td>
+                            <td>
+                                @{
+                                    string url = cliente.FechaTrasladoHistorico is null ? Url.Action("PerfilCliente") : Url.Action("PerfilClienteHistorico");
+                                    url += "?id=" + @cliente.Identificacion + (cliente.FechaTrasladoHistorico is null ? "" : "&mark=" + cliente.FechaTrasladoHistorico.Value.Ticks);
+                                }
+                                <a href="@url" target="_blank">
+                                    @cliente.Identificacion
+                                </a>
+                            </td>
+                            <td>@(cliente.Nombres + " " + cliente.Apellidos)</td>
+                            <td>@cliente.ScoreGanador</td>
+                            <td>@(cliente.FlagDecisionScore ? "Pre-Aprobado" : "Denegado")</td>
+                            <td>@(cliente.FlagLimitesPolitica ? "Cumplidos" : "No cumplidos")</td>
+                            <td>@(cliente.FlagCupoCreditos ? "Disponible" : "Exceso de creditos")</td>
+                            <td>
+                                @if (cliente.FlagDecisionScore && cliente.FlagLimitesPolitica && cliente.FlagCupoCreditos)
+                                {
+                                    <label class="badge bg-light-success">PRE-APROBADO</label>
+                                }
+                                else
+                                {
+                                    <label class="badge bg-light-danger">DENEGADO</label>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0">
+                <li class="page-item flex-grow-1 @(ViewBag.Start == 0 ? "disabled" : "")">
+                    <a class="page-link p-2 pl-3" href="?start=@(ViewBag.Start - ViewBag.Quote)&@ViewBag.Query" tabindex="-1">« Anterior</a>
+                </li>
+
+                @{
+                    int temp = 0;
+                    double total_pages = Math.Ceiling((double)ViewBag.Total / (double)ViewBag.Quote);
+                    long current_page = ViewBag.Start / ViewBag.Quote;
+                    bool first_ellipsis = false, second_ellipsis = false;
+                    while (temp < total_pages)
+                    {
+                        if (temp == 0 || temp == total_pages - 1 || temp == current_page || (temp >= current_page - 2 && temp <= current_page + 2))
+                        {
+                            <li class="page-item flex-grow-1 text-center @(current_page == temp ? "active" : "")">
+                                <a class="page-link p-2" href="?start=@(temp * ViewBag.Quote)&@ViewBag.Query">@(temp + 1)</a>
+                            </li>
+
+                        }
+                        else if (!first_ellipsis && temp < current_page - 2)
+                        {
+                            <li class="page-item flex-grow-1 text-center disabled">
+                                <a class="page-link p-2" href="#">...</a>
+                            </li>
+                            first_ellipsis = true;
+                        }
+                        else if (!second_ellipsis && temp > current_page + 2)
+                        {
+                            <li class="page-item flex-grow-1 text-center disabled">
+                                <a class="page-link p-2" href="#">...</a>
+                            </li>
+                            second_ellipsis = true;
+                        }
+
+                        temp++;
+                    }
+                }
+                <li class="page-item flex-grow-1 text-right @(ViewBag.Start + ViewBag.Quote > ViewBag.Total ? "disabled" : "")">
+                    <a class="page-link p-2 pr-3" href="?start=@(ViewBag.Start + ViewBag.Quote)&@ViewBag.Query">Siguiente »</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="~/vendor/css/daterangepicker.css" />
+
+    <style>
+        table.sortable thead th {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .table td {
+            white-space: nowrap;
+        }
+    </style>
+}
+
+@section Scripts{
+    <script src="~/vendor/js/moment.min.js"></script>
+    <script src="~/vendor/js/bootstrap-sortable.js"></script>
+    <script src="~/vendor/js/daterangepicker.min.js"></script>
+
+    <script>
+        const daterange = $('input[name="daterange"]').daterangepicker({
+            opens: 'left',
+            startDate: moment("@ViewBag.StartDate", "YYYY/MM/DD"),
+            endDate: moment("@ViewBag.EndDate", "YYYY/MM/DD"),
+            ranges: {
+                'Hoy': [moment(), moment()],
+                'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Ultimos 7 dias': [moment().subtract(6, 'days'), moment()],
+                'Ultimos 30 dias': [moment().subtract(29, 'days'), moment()],
+                'Este mes': [moment().startOf('month'), moment().endOf('month')],
+                'El mes pasado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            locale: {
+                "format": "DD/MM/YYYY",
+                "separator": " - ",
+                "applyLabel": "Filtrar",
+                "cancelLabel": "Cancelar",
+                "customRangeLabel": "Personalizado",
+                "monthNames": [
+                    "Enero",
+                    "Febrero",
+                    "Marzo",
+                    "Abril",
+                    "Mayo",
+                    "Junio",
+                    "Julio",
+                    "Agosto",
+                    "Septiembre",
+                    "Octubre",
+                    "Noviembre",
+                    "Diciembre"
+                ]
+            },
+        }, function (start, end, label) {
+            const value = $("#search-text").val().trim();
+            location.href = '@(Url.Action("History"))?sdate=' + start.format('YYYY-MM-DD') + '&edate=' + end.format('YYYY-MM-DD') + (value != "" ? "&search=" + value : '');
+        });
+
+        $.bootstrapSortable({ applyLast: false });
+
+        const table = $('#query-history table.sortable');
+        table.find('.nosort').append($('<i>', { class: 'fas fa-sort ml-1' }));
+
+        table.parent().on('sorted', function () {
+            const sorted = table.find('.sorted');
+
+            table.find('.nosort i').remove();
+            table.find('.nosort').append($('<i>', { class: 'fas fa-sort ml-1' }));
+            sorted.find('i').remove();
+            sorted.find('.sign.arrow.up').addClass('fas').addClass('fa-sort-up').addClass('ml-1').css('font-size', '18px');
+            sorted.find('.sign.arrow').addClass('fas').addClass('fa-sort-down').addClass('ml-1').css('font-size', '18px');
+        });
+
+        $("#search-btn").on('click', function(){
+            const value = $("#search-text").val().trim();
+            const picker = daterange.data('daterangepicker');
+            location.href = '@(Url.Action("History"))?sdate=' + picker.startDate.format('YYYY-MM-DD') + '&edate=' + picker.endDate.format('YYYY-MM-DD') + (value != "" ? "&search=" + value : '');
+        })
+    </script>
+}

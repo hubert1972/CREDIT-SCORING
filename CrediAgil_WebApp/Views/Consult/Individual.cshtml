@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Consultar Entidad";
+}
+
+<link href="~/vendor/libs/toastr/toastr.dist.css" rel="stylesheet" />
+<link href="~/vendor/libs/c3/c3.dist.css" />
+<link href="~/css/pages/EntityRequest.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-12">
+        <div class="form-group">
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control identification-number" autocomplete="off" placeholder="Buscar por número de identificación">
+                <span class="input-group-append">
+                    <button id="btnRequest" class="btn btn-primary" type="button">Consultar</button>
+                    <button class="btn btn-primary btn-loading" type="button" disabled="" style="display:none;">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Consultando...
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="record-container">
+    <div class="card p-4">
+        <div class="text-center entity-info">
+            <h3><i class="fa fa-user"></i> Sera redirigido a la información del cliente cuando finalice el progreso de la consulta.</h3>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="~/vendor/libs/toastr/toastr.dist.js"></script>
+
+    <script src="~/vendor/libs/c3/c3.dist.js"></script>
+
+    <script src="~/js/pages/EntityRequest.js?v=1.1"></script>
+
+}

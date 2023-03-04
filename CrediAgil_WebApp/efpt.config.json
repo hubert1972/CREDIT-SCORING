@@ -1,0 +1,97 @@
+﻿{
+   "CodeGenerationMode": 1,
+   "ContextClassName": "UI_Context",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "UI.WEB",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[Consulta].[Cliente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Consulta].[CreditosCliente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Consulta].[DecisionCrediticia]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Consulta].[FotoCliente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Core].[Cargo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Core].[Sucursal]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Core].[UserState]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Credito].[Productos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Historico].[Cliente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Historico].[CreditosCliente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Usuario].[CredencialesCDR]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Consulta].[Parametros_v]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Historico].[Clientes_v]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Consulta].[CalcularScores]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[Historico].[TrasladarCliente]",
+         "ObjectType": 1
+      }
+   ],
+   "UiHint": "(localdb)\\MSSQLLocalDB.datascore",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

@@ -1,0 +1,348 @@
+﻿@model List<UI.WEB.Models.POCO.ModeloMatrizTransicion>
+
+
+@{
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor1 = Model[0];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor2 = Model[1];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor3 = Model[2];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor4 = Model[3];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor5 = Model[4];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor6 = Model[5];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor7 = Model[6];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor8 = Model[7];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor9 = Model[8];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor10 = Model[9];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor11 = Model[10];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor12 = Model[11];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor13 = Model[12];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor14 = Model[13];
+}
+
+<style>
+
+    th {
+        min-width: 100px;
+    }
+
+    thead tr th {
+        color: green;
+    }
+
+    tfoot tr th {
+        font-size: 16px;
+    }
+
+</style>
+
+<div class="card">
+
+    <div class="card-body table-responsive">
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+                    <th>Etiqueta</th>
+                    <th>@("<1")</th>
+                    <th>1-30</th>
+                    <th>31-60</th>
+                    <th>61-90</th>
+                    <th>91-120</th>
+                    <th>121-150</th>
+                    <th>151-180</th>
+                    <th>181-210</th>
+                    <th>211-240</th>
+                    <th>241-270</th>
+                    <th>271-300</th>
+                    <th>301-330</th>
+                    <th>331-360</th>
+                    <th>@(">361")</th>
+                    <th>Total</th>
+                </tr>
+
+            </thead>
+
+            <tbody style="color:black;">
+                <tr>
+                    <td><b>@valor1.Tag</b></td>
+                    <td style="background-color:green;">@valor1.Valor1.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor2.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor3.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor4.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor5.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor6.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor7.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor8.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor9.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor10.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor11.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor12.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor13.ToString("N0")</td>
+                    <td style="background-color:red;">@valor1.Valor14.ToString("N0")</td>
+                    <td>@valor1.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor2.Tag</b></td>
+                    <td style="background-color:green;">@valor2.Valor1</td>
+                    <td style="background-color:yellow; color:black;">@valor2.Valor2</td>
+                    <td style="background-color:red;">@valor2.Valor3</td>
+                    <td style="background-color:red;">@valor2.Valor4</td>
+                    <td style="background-color:red;">@valor2.Valor5</td>
+                    <td style="background-color:red;">@valor2.Valor6</td>
+                    <td style="background-color:red;">@valor2.Valor7</td>
+                    <td style="background-color:red;">@valor2.Valor8</td>
+                    <td style="background-color:red;">@valor2.Valor9</td>
+                    <td style="background-color:red;">@valor2.Valor10</td>
+                    <td style="background-color:red;">@valor2.Valor11</td>
+                    <td style="background-color:red;">@valor2.Valor12</td>
+                    <td style="background-color:red;">@valor2.Valor13</td>
+                    <td style="background-color:red;">@valor2.Valor14</td>
+                    <td>@valor2.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor3.Tag</b></td>
+                    <td style="background-color:green;">@valor3.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor3.Valor2</td>
+                    <td style="background-color:yellow; color:black;">@valor3.Valor3</td>
+                    <td style="background-color:red;">@valor3.Valor4</td>
+                    <td style="background-color:red;">@valor3.Valor5</td>
+                    <td style="background-color:red;">@valor3.Valor6</td>
+                    <td style="background-color:red;">@valor3.Valor7</td>
+                    <td style="background-color:red;">@valor3.Valor8</td>
+                    <td style="background-color:red;">@valor3.Valor9</td>
+                    <td style="background-color:red;">@valor3.Valor10</td>
+                    <td style="background-color:red;">@valor3.Valor11</td>
+                    <td style="background-color:red;">@valor3.Valor12</td>
+                    <td style="background-color:red;">@valor3.Valor13</td>
+                    <td style="background-color:red;">@valor3.Valor14</td>
+                    <td>@valor3.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor4.Tag</b></td>
+                    <td style="background-color:green;">@valor4.Valor1</td>
+                    <td style="background-color:green;">@valor4.Valor2</td>
+                    <td style="background-color:green;">@valor4.Valor3</td>
+                    <td style="background-color:yellow; color:black;">@valor4.Valor4</td>
+                    <td style="background-color:red;">@valor4.Valor5</td>
+                    <td style="background-color:red;">@valor4.Valor6</td>
+                    <td style="background-color:red;">@valor4.Valor7</td>
+                    <td style="background-color:red;">@valor4.Valor8</td>
+                    <td style="background-color:red;">@valor4.Valor9</td>
+                    <td style="background-color:red;">@valor4.Valor10</td>
+                    <td style="background-color:red;">@valor4.Valor11</td>
+                    <td style="background-color:red;">@valor4.Valor12</td>
+                    <td style="background-color:red;">@valor4.Valor13</td>
+                    <td style="background-color:red;">@valor4.Valor14</td>
+                    <td>@valor4.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor5.Tag</b></td>
+                    <td style="background-color:green;">@valor5.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor5.Valor2</td>
+                    <td style="background-color:green;">@valor5.Valor3</td>
+                    <td style="background-color:green;">@valor5.Valor4</td>
+                    <td style="background-color:yellow;">@valor5.Valor5</td>
+                    <td style="background-color:red;">@valor5.Valor6</td>
+                    <td style="background-color:red;">@valor5.Valor7</td>
+                    <td style="background-color:red;">@valor5.Valor8</td>
+                    <td style="background-color:red;">@valor5.Valor9</td>
+                    <td style="background-color:red;">@valor5.Valor10</td>
+                    <td style="background-color:red;">@valor5.Valor11</td>
+                    <td style="background-color:red;">@valor5.Valor12</td>
+                    <td style="background-color:red;">@valor5.Valor13</td>
+                    <td style="background-color:red;">@valor5.Valor14</td>
+                    <td>@valor5.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor6.Tag</b></td>
+                    <td style="background-color:green;">@valor6.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor6.Valor2</td>
+                    <td style="background-color:green;">@valor6.Valor3</td>
+                    <td style="background-color:green;">@valor6.Valor4</td>
+                    <td style="background-color:green;">@valor6.Valor5</td>
+                    <td style="background-color:yellow;">@valor6.Valor6</td>
+                    <td style="background-color:red;">@valor6.Valor7</td>
+                    <td style="background-color:red;">@valor6.Valor8</td>
+                    <td style="background-color:red;">@valor6.Valor9</td>
+                    <td style="background-color:red;">@valor6.Valor10</td>
+                    <td style="background-color:red;">@valor6.Valor11</td>
+                    <td style="background-color:red;">@valor6.Valor12</td>
+                    <td style="background-color:red;">@valor6.Valor13</td>
+                    <td style="background-color:red;">@valor6.Valor14</td>
+                    <td>@valor6.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor7.Tag</b></td>
+                    <td style="background-color:green;">@valor7.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor7.Valor2</td>
+                    <td style="background-color:green;">@valor7.Valor3</td>
+                    <td style="background-color:green;">@valor7.Valor4</td>
+                    <td style="background-color:green;">@valor7.Valor5</td>
+                    <td style="background-color:green;">@valor7.Valor6</td>
+                    <td style="background-color:yellow;">@valor7.Valor7</td>
+                    <td style="background-color:red;">@valor7.Valor8</td>
+                    <td style="background-color:red;">@valor7.Valor9</td>
+                    <td style="background-color:red;">@valor7.Valor10</td>
+                    <td style="background-color:red;">@valor7.Valor11</td>
+                    <td style="background-color:red;">@valor7.Valor12</td>
+                    <td style="background-color:red;">@valor7.Valor13</td>
+                    <td style="background-color:red;">@valor7.Valor14</td>
+                    <td>@valor7.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor8.Tag</b></td>
+                    <td style="background-color:green;">@valor8.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor8.Valor2</td>
+                    <td style="background-color:green;">@valor8.Valor3</td>
+                    <td style="background-color:green;">@valor8.Valor4</td>
+                    <td style="background-color:green;">@valor8.Valor5</td>
+                    <td style="background-color:green;">@valor8.Valor6</td>
+                    <td style="background-color:green;">@valor8.Valor7</td>
+                    <td style="background-color:yellow;">@valor8.Valor8</td>
+                    <td style="background-color:red;">@valor8.Valor9</td>
+                    <td style="background-color:red;">@valor8.Valor10</td>
+                    <td style="background-color:red;">@valor8.Valor11</td>
+                    <td style="background-color:red;">@valor8.Valor12</td>
+                    <td style="background-color:red;">@valor8.Valor13</td>
+                    <td style="background-color:red;">@valor8.Valor14</td>
+                    <td>@valor8.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor9.Tag</b></td>
+                    <td style="background-color:green;">@valor9.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor9.Valor2</td>
+                    <td style="background-color:green;">@valor9.Valor3</td>
+                    <td style="background-color:green;">@valor9.Valor4</td>
+                    <td style="background-color:green;">@valor9.Valor5</td>
+                    <td style="background-color:green;">@valor9.Valor6</td>
+                    <td style="background-color:green;">@valor9.Valor7</td>
+                    <td style="background-color:green;">@valor9.Valor8</td>
+                    <td style="background-color:yellow;">@valor9.Valor9</td>
+                    <td style="background-color:red;">@valor9.Valor10</td>
+                    <td style="background-color:red;">@valor9.Valor11</td>
+                    <td style="background-color:red;">@valor9.Valor12</td>
+                    <td style="background-color:red;">@valor9.Valor13</td>
+                    <td style="background-color:red;">@valor9.Valor14</td>
+                    <td>@valor9.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor10.Tag</b></td>
+                    <td style="background-color:green;">@valor10.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor10.Valor2</td>
+                    <td style="background-color:green;">@valor10.Valor3</td>
+                    <td style="background-color:green;">@valor10.Valor4</td>
+                    <td style="background-color:green;">@valor10.Valor5</td>
+                    <td style="background-color:green;">@valor10.Valor6</td>
+                    <td style="background-color:green;">@valor10.Valor7</td>
+                    <td style="background-color:green;">@valor10.Valor8</td>
+                    <td style="background-color:green;">@valor10.Valor9</td>
+                    <td style="background-color:yellow;">@valor10.Valor10</td>
+                    <td style="background-color:red;">@valor10.Valor11</td>
+                    <td style="background-color:red;">@valor10.Valor12</td>
+                    <td style="background-color:red;">@valor10.Valor13</td>
+                    <td style="background-color:red;">@valor10.Valor14</td>
+                    <td>@valor10.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor11.Tag</b></td>
+                    <td style="background-color:green;">@valor11.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor11.Valor2</td>
+                    <td style="background-color:green;">@valor11.Valor3</td>
+                    <td style="background-color:green;">@valor11.Valor4</td>
+                    <td style="background-color:green;">@valor11.Valor5</td>
+                    <td style="background-color:green;">@valor11.Valor6</td>
+                    <td style="background-color:green;">@valor11.Valor7</td>
+                    <td style="background-color:green;">@valor11.Valor8</td>
+                    <td style="background-color:green;">@valor11.Valor9</td>
+                    <td style="background-color:green;">@valor11.Valor10</td>
+                    <td style="background-color:yellow;">@valor11.Valor11</td>
+                    <td style="background-color:red;">@valor11.Valor12</td>
+                    <td style="background-color:red;">@valor11.Valor13</td>
+                    <td style="background-color:red;">@valor11.Valor14</td>
+                    <td>@valor11.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor12.Tag</b></td>
+                    <td style="background-color:green;">@valor12.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor12.Valor2</td>
+                    <td style="background-color:green;">@valor12.Valor3</td>
+                    <td style="background-color:green;">@valor12.Valor4</td>
+                    <td style="background-color:green;">@valor12.Valor5</td>
+                    <td style="background-color:green;">@valor12.Valor6</td>
+                    <td style="background-color:green;">@valor12.Valor7</td>
+                    <td style="background-color:green;">@valor12.Valor8</td>
+                    <td style="background-color:green;">@valor12.Valor9</td>
+                    <td style="background-color:green;">@valor12.Valor10</td>
+                    <td style="background-color:green;">@valor12.Valor11</td>
+                    <td style="background-color:yellow;">@valor12.Valor12</td>
+                    <td style="background-color:red;">@valor12.Valor13</td>
+                    <td style="background-color:red;">@valor12.Valor14</td>
+                    <td>@valor12.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor13.Tag</b></td>
+                    <td style="background-color:green;">@valor13.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor13.Valor2</td>
+                    <td style="background-color:green;">@valor13.Valor3</td>
+                    <td style="background-color:green;">@valor13.Valor4</td>
+                    <td style="background-color:green;">@valor13.Valor5</td>
+                    <td style="background-color:green;">@valor13.Valor6</td>
+                    <td style="background-color:green;">@valor13.Valor7</td>
+                    <td style="background-color:green;">@valor13.Valor8</td>
+                    <td style="background-color:green;">@valor13.Valor9</td>
+                    <td style="background-color:green;">@valor13.Valor10</td>
+                    <td style="background-color:green;">@valor13.Valor11</td>
+                    <td style="background-color:green;">@valor13.Valor12</td>
+                    <td style="background-color:yellow;">@valor13.Valor13</td>
+                    <td style="background-color:red;">@valor13.Valor14</td>
+                    <td>@valor13.Total</td>
+                </tr>
+                <tr>
+                    <td><b>@valor14.Tag</b></td>
+                    <td style="background-color:green;">@valor14.Valor1</td>
+                    <td style="background-color:green; color:black;">@valor14.Valor2</td>
+                    <td style="background-color:green;">@valor14.Valor3</td>
+                    <td style="background-color:green;">@valor14.Valor4</td>
+                    <td style="background-color:green;">@valor14.Valor5</td>
+                    <td style="background-color:green;">@valor14.Valor6</td>
+                    <td style="background-color:green;">@valor14.Valor7</td>
+                    <td style="background-color:green;">@valor14.Valor8</td>
+                    <td style="background-color:green;">@valor14.Valor9</td>
+                    <td style="background-color:green;">@valor14.Valor10</td>
+                    <td style="background-color:green;">@valor14.Valor11</td>
+                    <td style="background-color:green;">@valor14.Valor12</td>
+                    <td style="background-color:green;">@valor14.Valor13</td>
+                    <td style="background-color:yellow;">@valor14.Valor14</td>
+                    <td>@valor14.Total</td>
+                </tr>
+            </tbody>
+
+            <tfoot>
+
+                <tr>
+                    <th></th>
+                    <th>@Model.Sum(a => a.Valor1).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor2).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor3).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor4).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor5).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor6).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor7).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor8).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor9).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor10).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor11).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor12).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor13).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Valor14).ToString("N0")</th>
+                    <th>@Model.Sum(a => a.Total).ToString("N0")</th>
+                </tr>
+
+            </tfoot>
+
+        </table>
+
+    </div>
+
+</div>

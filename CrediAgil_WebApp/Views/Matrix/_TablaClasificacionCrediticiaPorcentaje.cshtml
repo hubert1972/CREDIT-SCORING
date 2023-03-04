@@ -1,0 +1,80 @@
+﻿@model List<UI.WEB.Models.POCO.ModeloClasificacionCrediticia>
+
+@{
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticia valor1 = Model[0];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticia valor2 = Model[1];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticia valor3 = Model[2];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticia valor4 = Model[3];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticia valor5 = Model[4];
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Etiqueta</th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>E</th>
+            <th>Total General</th>
+        </tr>
+    </thead>
+    <tbody style="color:black;">
+        <tr>
+            <td><b>@valor1.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor1.A) / Convert.ToDecimal(valor1.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor1.B) / Convert.ToDecimal(valor1.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor1.C) / Convert.ToDecimal(valor1.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor1.D) / Convert.ToDecimal(valor1.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round( (Convert.ToDecimal(valor1.E) / Convert.ToDecimal(valor1.Total)) * 100, 2) )%</td>
+            <td>100%</td>
+        </tr>
+        <tr>
+            <td><b>@valor2.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor2.A) / Convert.ToDecimal(valor2.Total)) * 100, 2))%</td>
+            <td style="background-color:yellow;">@(Math.Round((Convert.ToDecimal(valor2.B) / Convert.ToDecimal(valor2.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor2.C) / Convert.ToDecimal(valor2.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor2.D) / Convert.ToDecimal(valor2.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor2.E) / Convert.ToDecimal(valor2.Total)) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+        <tr>
+            <td><b>@valor3.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor3.A) / Convert.ToDecimal(valor3.Total)) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor3.B) / Convert.ToDecimal(valor3.Total)) * 100, 2))%</td>
+            <td style="background-color:yellow;">@(Math.Round((Convert.ToDecimal(valor3.C) / Convert.ToDecimal(valor3.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor3.D) / Convert.ToDecimal(valor3.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor3.E) / Convert.ToDecimal(valor3.Total)) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+        <tr>
+            <td><b>@valor4.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor4.A) / Convert.ToDecimal(valor4.Total)) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor4.B) / Convert.ToDecimal(valor4.Total)) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor4.C) / Convert.ToDecimal(valor4.Total)) * 100, 2))%</td>
+            <td style="background-color:yellow;">@(Math.Round((Convert.ToDecimal(valor4.D) / Convert.ToDecimal(valor4.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor4.E) / Convert.ToDecimal(valor4.Total)) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+        <tr>
+            <td><b>@valor5.Etiqueta</b></td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor5.A) / Convert.ToDecimal(valor5.Total)) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor5.B) / Convert.ToDecimal(valor5.Total)) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor5.C) / Convert.ToDecimal(valor5.Total)) * 100, 2))%</td>
+            <td style="background-color:green;">@(Math.Round((Convert.ToDecimal(valor5.D) / Convert.ToDecimal(valor5.Total)) * 100, 2))%</td>
+            <td style="background-color:red;">@(Math.Round((Convert.ToDecimal(valor5.E) / Convert.ToDecimal(valor5.Total)) * 100, 2))%</td>
+            <td>100%</td>
+        </tr>
+    </tbody>
+@*    <tfoot>
+        <tr style="font-size:16px;">
+            <td></td>
+            <td>@((valor1.A + valor2.A + valor3.A + valor4.A + valor5.A).ToString("N0"))</td>
+            <td>@((valor1.B + valor2.B + valor3.B + valor4.B + valor5.B).ToString("N0"))</td>
+            <td>@((valor1.C + valor2.C + valor3.C + valor4.C + valor5.C).ToString("N0"))</td>
+            <td>@((valor1.D + valor2.D + valor3.D + valor4.D + valor5.D).ToString("N0"))</td>
+            <td>@((valor1.E + valor2.E + valor3.E + valor4.E + valor5.E).ToString("N0"))</td>
+        </tr>
+    </tfoot>*@
+</table>

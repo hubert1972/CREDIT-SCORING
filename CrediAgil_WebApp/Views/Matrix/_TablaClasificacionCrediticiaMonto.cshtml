@@ -1,0 +1,80 @@
+﻿@model List<UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto>
+
+@{
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor1 = Model[0];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor2 = Model[1];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor3 = Model[2];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor4 = Model[3];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor5 = Model[4];
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Etiqueta</th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>E</th>
+            <th>Total General</th>
+        </tr>
+    </thead>
+    <tbody style="color:black;">
+        <tr>
+            <td><b>@valor1.Etiqueta</b></td>
+            <td style="background-color:green;">@valor1.A.ToString("N")</td>
+            <td style="background-color:red;">@valor1.B.ToString("N")</td>
+            <td style="background-color:red;">@valor1.C.ToString("N")</td>
+            <td style="background-color:red;">@valor1.D.ToString("N")</td>
+            <td style="background-color:red;">@valor1.E.ToString("N")</td>
+            <td>@valor1.Total.ToString("N")</td>
+        </tr>
+        <tr>
+            <td><b>@valor2.Etiqueta</b></td>
+            <td style="background-color:green;">@valor2.A.ToString("N")</td>
+            <td style="background-color:yellow;">@valor2.B.ToString("N")</td>
+            <td style="background-color:red;">@valor2.C.ToString("N")</td>
+            <td style="background-color:red;">@valor2.D.ToString("N")</td>
+            <td style="background-color:red;">@valor2.E.ToString("N")</td>
+            <td>@valor2.Total.ToString("N")</td>
+        </tr>
+        <tr>
+            <td><b>@valor3.Etiqueta</b></td>
+            <td style="background-color:green;">@valor3.A.ToString("N")</td>
+            <td style="background-color:green;">@valor3.B.ToString("N")</td>
+            <td style="background-color:yellow;">@valor3.C.ToString("N")</td>
+            <td style="background-color:red;">@valor3.D.ToString("N")</td>
+            <td style="background-color:red;">@valor3.E.ToString("N")</td>
+            <td>@valor3.Total.ToString("N")</td>
+        </tr>
+        <tr>
+            <td><b>@valor4.Etiqueta</b></td>
+            <td style="background-color:green;">@valor4.A.ToString("N")</td>
+            <td style="background-color:green;">@valor4.B.ToString("N")</td>
+            <td style="background-color:green;">@valor4.C.ToString("N")</td>
+            <td style="background-color:yellow;">@valor4.D.ToString("N")</td>
+            <td style="background-color:red;">@valor4.E.ToString("N")</td>
+            <td>@valor4.Total.ToString("N")</td>
+        </tr>
+        <tr>
+            <td><b>@valor5.Etiqueta</b></td>
+            <td style="background-color:green;">@valor5.A.ToString("N")</td>
+            <td style="background-color:green;">@valor5.B.ToString("N")</td>
+            <td style="background-color:green;">@valor5.C.ToString("N")</td>
+            <td style="background-color:green;">@valor5.D.ToString("N")</td>
+            <td style="background-color:red;">@valor5.E.ToString("N")</td>
+            <td>@valor5.Total.ToString("N")</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr style="font-size:16px;">
+            <td></td>
+            <td>@((valor1.A + valor2.A + valor3.A + valor4.A + valor5.A).ToString("N"))</td>
+            <td>@((valor1.B + valor2.B + valor3.B + valor4.B + valor5.B).ToString("N"))</td>
+            <td>@((valor1.C + valor2.C + valor3.C + valor4.C + valor5.C).ToString("N"))</td>
+            <td>@((valor1.D + valor2.D + valor3.D + valor4.D + valor5.D).ToString("N"))</td>
+            <td>@((valor1.E + valor2.E + valor3.E + valor4.E + valor5.E).ToString("N"))</td>
+        </tr>
+    </tfoot>
+</table>

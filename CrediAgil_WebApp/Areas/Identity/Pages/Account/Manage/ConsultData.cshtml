@@ -1,0 +1,52 @@
+@page
+@using UI.WEB.Areas.Identity.Pages.Account.Manage;
+@model ConsultDataModel
+@{
+    ViewData["Title"] = "Consulta en central de riesgo";
+    ViewData["ActivePage"] = ManageNavPages.ConsultData;
+}
+
+
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="m-0">@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <form id="profile-form" method="post" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.UserDC"></label>
+                        <input asp-for="Input.UserDC" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="Input.UserDC" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.PassWordDC"></label>
+                        <input type="password" asp-for="Input.PassWordDC" class="form-control" value="@Model.Input.PassWordDC"/>
+                        <span asp-validation-for="Input.PassWordDC" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-auto">
+                    <button id="update-profile-button" type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

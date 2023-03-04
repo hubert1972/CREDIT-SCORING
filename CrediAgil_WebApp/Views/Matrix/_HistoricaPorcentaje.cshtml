@@ -1,0 +1,656 @@
+﻿@model List<UI.WEB.Models.POCO.ModeloMatrizTransicion>
+
+
+@{
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor1 = Model[0];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor2 = Model[1];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor3 = Model[2];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor4 = Model[3];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor5 = Model[4];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor6 = Model[5];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor7 = Model[6];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor8 = Model[7];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor9 = Model[8];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor10 = Model[9];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor11 = Model[10];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor12 = Model[11];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor13 = Model[12];
+    UI.WEB.Models.POCO.ModeloMatrizTransicion valor14 = Model[13];
+}
+
+<style>
+
+    th {
+        min-width: 100px;
+    }
+
+    thead tr th {
+        color: green;
+    }
+
+    tfoot tr th {
+        font-size: 16px;
+    }
+
+</style>
+
+<div class="card">
+    <div class="card-body table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Etiqueta</th>
+                    <th>@("<1")</th>
+                    <th>1-30</th>
+                    <th>31-60</th>
+                    <th>61-90</th>
+                    <th>91-120</th>
+                    <th>121-150</th>
+                    <th>151-180</th>
+                    <th>181-210</th>
+                    <th>211-240</th>
+                    <th>241-270</th>
+                    <th>271-300</th>
+                    <th>301-330</th>
+                    <th>331-360</th>
+                    <th>@(">361")</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody style="color:black;">
+                <tr>
+                    @{
+                        if (valor1.Total > 0)
+                        {
+                            <td><b>@valor1.Tag</b></td>
+                            <td style="background-color:green;">@Math.Round((Convert.ToDecimal(valor1.Valor1) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor2) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor3) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor4) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor5) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor6) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor7) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor8) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor9) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor10) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor11) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor12) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor13) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor1.Valor14) / Convert.ToDecimal(valor1.Total)) * 100)%</td>
+                            <td>100%</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor1.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>100%</td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        if (valor2.Total > 0)
+                        {
+                            <td><b>@valor2.Tag</b></td>
+                            <td style="background-color:green;">@Math.Round((Convert.ToDecimal(valor2.Valor1) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:yellow;">@Math.Round((Convert.ToDecimal(valor2.Valor2) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor3) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor4) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor5) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor6) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor7) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor8) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor9) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor10) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor11) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor12) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor13) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor2.Valor14) / Convert.ToDecimal(valor2.Total)) * 100)%</td>
+                            <td>100%</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor2.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow; color:black;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0 %</td>
+                            <td style="background-color:red;">0 %</td>
+                            <td style="background-color:red;">0 %</td>
+                            <td style="background-color:red;">0 %</td>
+                            <td style="background-color:red;">0 %</td>
+                            <td>@valor2.Total</td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        if (valor3.Total > 0)
+                        {
+                            <td><b>@valor3.Tag</b></td>
+                            <td style="background-color:green;">@Math.Round((Convert.ToDecimal(valor3.Valor1) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:green; color:black;">@Math.Round((Convert.ToDecimal(valor3.Valor2) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:yellow; color:black;">@Math.Round((Convert.ToDecimal(valor3.Valor3) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor4) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor5) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor6) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor7) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor8) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor9) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor10) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor11) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor12) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor13) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor3.Valor14) / Convert.ToDecimal(valor3.Total)) * 100)%</td>
+                            <td>100%</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor3.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:yellow; color:black;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>0%</td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        if (valor4.Total > 0)
+                        {
+                            <td><b>@valor4.Tag</b></td>
+                            <td style="background-color:green;">@Math.Round((Convert.ToDecimal(valor4.Valor1) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:green; color:black;">@Math.Round((Convert.ToDecimal(valor4.Valor2) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:green; color:black;">@Math.Round((Convert.ToDecimal(valor4.Valor3) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:yellow;">@Math.Round((Convert.ToDecimal(valor4.Valor4) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor5) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor6) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor7) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor8) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor9) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor10) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor11) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor12) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor13) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td style="background-color:red;">@Math.Round((Convert.ToDecimal(valor4.Valor14) / Convert.ToDecimal(valor4.Total)) * 100)%</td>
+                            <td>100%</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor4.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow; color:black;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor4.Total</td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        if (valor5.Total > 0)
+                        {
+                            <td><b>@valor5.Tag</b></td>
+                            <td style="background-color:green;">@((valor5.Valor1 / valor5.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor5.Valor2 / valor5.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor5.Valor3 / valor5.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor5.Valor4 / valor5.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor5.Valor5 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor6 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor7 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor8 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor9 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor10 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor11 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor12 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor13 / valor5.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor5.Valor14 / valor5.Total) * 100) %</td>
+                            <td>@valor5.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor5.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor5.Total</td>
+                        }
+                    }
+
+                </tr>
+                <tr>
+                    @{
+                        if (valor6.Total > 0)
+                        {
+                            <td><b>@valor6.Tag</b></td>
+                            <td style="background-color:green;">@((valor6.Valor1 / valor6.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor6.Valor2 / valor6.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor6.Valor3 / valor6.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor6.Valor4 / valor6.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor6.Valor5 / valor6.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor6.Valor6 / valor6.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor6.Valor7 / valor6.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor6.Valor8 / valor6.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor6.Valor9 / valor6.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor6.Valor10 / valor6.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor6.Valor11 / valor6.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor6.Valor12 / valor6.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor6.Valor13 / valor6.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor6.Valor14 / valor6.Total) * 100) %</td>
+                            <td>@valor6.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor6.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor6.Total</td>
+                        }
+                    }
+
+                </tr>
+                <tr>
+                    @{
+                        if (valor7.Total > 0)
+                        {
+                            <td><b>@valor7.Tag</b></td>
+                            <td style="background-color:green;">@((valor7.Valor1 / valor7.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor7.Valor2 / valor7.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor7.Valor3 / valor7.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor7.Valor4 / valor7.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor7.Valor5 / valor7.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor7.Valor6 / valor7.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor7.Valor7 / valor7.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor7.Valor8 / valor7.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor7.Valor9 / valor7.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor7.Valor10 / valor7.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor7.Valor11 / valor7.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor7.Valor12 / valor7.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor7.Valor13 / valor7.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor7.Valor14 / valor7.Total) * 100) %</td>
+                            <td>@valor7.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor7.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor7.Total</td>
+                        }
+                    }
+
+                </tr>
+                <tr>
+                    @{
+                        if (valor8.Total > 0)
+                        {
+                            <td><b>@valor8.Tag</b></td>
+                            <td style="background-color:green;">@((valor8.Valor1 / valor8.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor8.Valor2 / valor8.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor8.Valor3 / valor8.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor8.Valor4 / valor8.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor8.Valor5 / valor8.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor8.Valor6 / valor8.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor8.Valor7 / valor8.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor8.Valor8 / valor8.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor8.Valor9 / valor8.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor8.Valor10 / valor8.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor8.Valor11 / valor8.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor8.Valor12 / valor8.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor8.Valor13 / valor8.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor8.Valor14 / valor8.Total) * 100) %</td>
+                            <td>@valor8.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor8.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor8.Total</td>
+                        }
+                    }
+
+                </tr>
+                <tr>
+                    @{
+                        if (valor9.Total > 0)
+                        {
+                            <td><b>@valor9.Tag</b></td>
+                            <td style="background-color:green;">@((valor9.Valor1 / valor9.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor9.Valor2 / valor9.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor9.Valor3 / valor9.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor9.Valor4 / valor9.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor9.Valor5 / valor9.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor9.Valor6 / valor9.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor9.Valor7 / valor9.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor9.Valor8 / valor9.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor9.Valor9 / valor9.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor9.Valor10 / valor9.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor9.Valor11 / valor9.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor9.Valor12 / valor9.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor9.Valor13 / valor9.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor9.Valor14 / valor9.Total) * 100) %</td>
+                            <td>@valor9.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor9.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor9.Total</td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        if (valor10.Total > 0)
+                        {
+                            <td><b>@valor10.Tag</b></td>
+                            <td style="background-color:green;">@((valor10.Valor1 / valor10.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor10.Valor2 / valor10.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor10.Valor3 / valor10.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor10.Valor4 / valor10.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor10.Valor5 / valor10.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor10.Valor6 / valor10.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor10.Valor7 / valor10.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor10.Valor8 / valor10.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor10.Valor9 / valor10.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor10.Valor10 / valor10.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor10.Valor11 / valor10.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor10.Valor12 / valor10.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor10.Valor13 / valor10.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor10.Valor14 / valor10.Total) * 100) %</td>
+                            <td>@valor10.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor10.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor10.Total</td>
+                        }
+                    }
+
+                </tr>
+                <tr>
+                    @{
+                        if (valor11.Total > 0)
+                        {
+                            <td><b>@valor11.Tag</b></td>
+                            <td style="background-color:green;">@((valor11.Valor1 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor11.Valor2 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor11.Valor3 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor11.Valor4 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor11.Valor5 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor11.Valor6 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor11.Valor7 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor11.Valor8 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor11.Valor9 / valor11.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor11.Valor10 / valor11.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor11.Valor11 / valor11.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor11.Valor12 / valor11.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor11.Valor13 / valor11.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor11.Valor14 / valor11.Total) * 100) %</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor11.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                        }
+                    }
+                    <td>@valor11.Total</td>
+                </tr>
+                <tr>
+                    @{
+                        if (valor12.Total > 0)
+                        {
+                            <td><b>@valor12.Tag</b></td>
+                            <td style="background-color:green;">@((valor12.Valor1 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor12.Valor2 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor3 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor4 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor5 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor6 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor7 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor8 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor9 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor10 / valor12.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor12.Valor11 / valor12.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor12.Valor12 / valor12.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor12.Valor13 / valor12.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor12.Valor14 / valor12.Total) * 100) %</td>
+                            <td>@valor12.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor12.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor12.Total</td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        if (valor13.Total > 0)
+                        {
+                            <td><b>@valor13.Tag</b></td>
+                            <td style="background-color:green;">@((valor13.Valor1 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor13.Valor2 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor3 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor4 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor5 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor6 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor7 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor8 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor9 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor10 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor11 / valor13.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor13.Valor12 / valor13.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor13.Valor13 / valor13.Total) * 100) %</td>
+                            <td style="background-color:red;">@((valor13.Valor14 / valor13.Total) * 100) %</td>
+                            <td>@valor13.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor13.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td style="background-color:red;">0%</td>
+                            <td>@valor13.Total</td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        if (valor14.Total > 0)
+                        {
+                            <td><b>@valor14.Tag</b></td>
+                            <td style="background-color:green;">@((valor14.Valor1 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green; color:black;">@((valor14.Valor2 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor3 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor4 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor5 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor6 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor7 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor8 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor9 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor10 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor11 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor12 / valor14.Total) * 100) %</td>
+                            <td style="background-color:green;">@((valor14.Valor13 / valor14.Total) * 100) %</td>
+                            <td style="background-color:yellow;">@((valor14.Valor14 / valor14.Total) * 100) %</td>
+                            <td>@valor14.Total</td>
+                        }
+                        else
+                        {
+                            <td><b>@valor14.Tag</b></td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green; color:black;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:green;">0%</td>
+                            <td style="background-color:yellow;">0%</td>
+                            <td>@valor14.Total</td>
+                        }
+                    }
+                </tr>
+            </tbody>            
+        </table>
+    </div>
+</div>

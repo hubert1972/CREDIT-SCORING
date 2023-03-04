@@ -1,0 +1,91 @@
+﻿@model List<UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto>
+
+@{
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor1 = Model[0];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor2 = Model[1];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor3 = Model[2];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor4 = Model[3];
+    UI.WEB.Models.POCO.ModeloClasificacionCrediticiaMonto valor5 = Model[4];
+}
+
+<link href="~/vendor/libs/toastr/toastr.dist.css" rel="stylesheet" />
+<style>
+
+    th {
+        min-width: 100px;
+    }
+
+    thead tr th {
+        color: green;
+    }
+
+    tfoot tr th {
+        font-size: 16px;
+    }
+
+</style>
+
+<h1 class="text-success">Clasificación Crediticia por monto en porcentaje</h1>
+
+<div class="p-2" style="background-color:#cbd2e3;">
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-6">
+            <label class="form-label">Filtrar por año</label>
+            <select class="form-control filter-anio">
+                <option value="0">** Todos los años **</option>
+                <option value="2011">2011</option>
+            </select>
+        </div>
+        <div class="col-12 col-sm-6 col-md-6">
+            <label class="form-label">Filtrar por mes</label>
+            <select class="form-control filter-mes">
+                <option value="0">** Todos los meses **</option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body table-responsive table-container">
+        <partial name="_TablaClasificacionCredMontoPorcentaje.cshtml" model="@Model" />
+    </div>
+</div>
+
+
+@section Scripts{
+
+<script src="~/vendor/libs/toastr/toastr.dist.js"></script>
+
+<script>
+
+    $('.filter-anio, .filter-mes').change(function(){
+
+    var jqxhr = $.ajax({
+        url: "TablaClasificacionCredMontoPorcentaje",
+        type: "POST",
+        data: {
+            "mes": $('.filter-mes').val(),
+            "anio": $('.filter-anio').val()
+        }
+     });
+
+     jqxhr.done(function (data) {
+         $('.table-container').html(data);
+         toastr.success("Filtro aplicado correctamente");
+     });
+     jqxhr.fail(function (data, textStatus) { 
+         alert("Error filtrando los datos");
+     });
+     jqxhr.always(function (data, textStatus, jqXhr) { });
+
+    });
+
+</script>
+
+}

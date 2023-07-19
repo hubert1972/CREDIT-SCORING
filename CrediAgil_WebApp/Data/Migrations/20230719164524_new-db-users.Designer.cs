@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrediAgil_WebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230518014939_User-Context")]
-    partial class UserContext
+    [Migration("20230719164524_new-db-users")]
+    partial class newdbusers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -30,7 +30,7 @@ namespace UI.WEB.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
+        private readonly ILogger<ListModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly UI_Context _context;
 
@@ -38,7 +38,7 @@ namespace UI.WEB.Areas.Identity.Pages.Account
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             UI_Context _context,
-            ILogger<RegisterModel> logger)
+            ILogger<ListModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -67,41 +67,50 @@ namespace UI.WEB.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetAsync(uint start = 0, string search = null)
         {
-            int quote = 10;
-            if (start != 0 && (start % quote) != 0)
+            try
+            {
+                int quote = 10;
+                //if (start != 0 && (start % quote) != 0)
+                //    return StatusCode(403);
+
+                var query = _userManager.Users;
+                if (!string.IsNullOrEmpty(search))
+                    query = query.Where(c => (c.FirstName + c.LastName).ToLower().Contains(search.ToLower()));
+
+                PaginationStart = (int)start;
+                PaginationQuote = quote;
+                PaginationTotal = await query.CountAsync();
+                UrlParameterSearch = HttpUtility.HtmlEncode(search);
+                UrlQuery = (search != null ? $"search={HttpUtility.HtmlEncode(search)}" : string.Empty);
+
+                Users = await query.Skip((int)start).Take(quote).Select(u => new UserViewModel()
+                {
+                    Id = u.Id,
+                    Nickname = u.UserName,
+                    FullName = u.FirstName + " " + u.LastName,
+                    Sucursal = u.Sucursal.ToString(),
+                    Cargo = u.Cargo.ToString(),
+                    IsActive = u.State == Guid.Parse(ApplicationUser.STATE_ACTIVE)
+                }).ToListAsync();
+
+                var sucursales = _context.Sucursal.ToArray();
+                var cargos = _context.Cargo.ToArray();
+                Users.ForEach(u =>
+                {
+                    u.Sucursal = sucursales.FirstOrDefault(s => s.Id == Guid.Parse(u.Sucursal)).Description;
+                    u.Cargo = cargos.FirstOrDefault(c => c.Id == Guid.Parse(u.Cargo)).Description;
+                });
+
+                CurrentUser = await _userManager.GetUserAsync(User);
+
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ERROR LIST");
                 return StatusCode(403);
-
-            var query = _userManager.Users;
-            if (!string.IsNullOrEmpty(search))
-                query = query.Where(c => (c.FirstName + c.LastName).ToLower().Contains(search.ToLower()));
-
-            PaginationStart = (int)start;
-            PaginationQuote = quote;
-            PaginationTotal = await query.CountAsync();
-            UrlParameterSearch = HttpUtility.HtmlEncode(search);
-            UrlQuery = (search != null ? $"search={HttpUtility.HtmlEncode(search)}" : string.Empty);
-
-            Users = await query.Skip((int)start).Take(quote).Select(u => new UserViewModel()
-            {
-                Id = u.Id,
-                Nickname = u.UserName,
-                FullName = u.FirstName + " " + u.LastName,
-                Sucursal = u.Sucursal.ToString(),
-                Cargo = u.Cargo.ToString(),
-                IsActive = u.State == Guid.Parse(ApplicationUser.STATE_ACTIVE)
-            }).ToListAsync();
-
-            var sucursales = _context.Sucursal.ToArray();
-            var cargos = _context.Cargo.ToArray();
-            Users.ForEach(u =>
-            {
-                u.Sucursal = sucursales.FirstOrDefault(s => s.Id == Guid.Parse(u.Sucursal)).Description;
-                u.Cargo = cargos.FirstOrDefault(c => c.Id == Guid.Parse(u.Cargo)).Description;
-            });
-
-            CurrentUser = await _userManager.GetUserAsync(User);
-
-            return Page();
+            }                        
         }
     }
 }

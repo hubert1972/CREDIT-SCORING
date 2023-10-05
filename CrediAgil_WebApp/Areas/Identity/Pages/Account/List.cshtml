@@ -59,7 +59,7 @@
                     @foreach (var user in Model.Users)
                     {
                         <tr class="@(user.IsActive ? "" : "d-none")" data-active="@user.IsActive"
-                        onclick="window.location.href='/Identity/Account/Manage@(Model.CurrentUser.Id != user.Id ? ("?userId=" + user.Id) : "")';">
+                        onclick="window.location.href='../Account/Manage@(Model.CurrentUser.Id != user.Id ? ("?userId=" + user.Id) : "")';">
                             <td>@user.FullName</td>
                             <td>@user.Nickname</td>
                             <td>@user.Sucursal</td>

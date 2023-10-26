@@ -21,21 +21,21 @@
 <div class="card mt-3 mb-3">
     <div class="card-body p-2">
         <ul class="nav nav-pills flex-column">
-            <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" href="@("/Identity/Account/Manage" + query)">Datos basicos</a></li>
+            <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" href="~/Identity/Account/Manage?userId=@user.Id">Datos basicos</a></li>
 
             @if (User.IsInRole(RolesDefinition.Administrator))
             {
-                <li class="nav-item"><a class="nav-link @ManageNavPages.ConsultDataNavClass(ViewContext)" id="profile" href="@("/Identity/Account/Manage/ConsultData" + query)">Datos de consulta</a></li>
+                <li class="nav-item"><a class="nav-link @ManageNavPages.ConsultDataNavClass(ViewContext)" id="profile" href="~/Identity/Account/Manage/ConsultData?userId=@user.Id">Datos de consulta</a></li>
             }
 
             @if (string.IsNullOrEmpty(query))
             {
-                <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" href="@("/Identity/Account/Manage/ChangePassword")">Cambio de clave</a></li>
+                <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" href="~/Identity/Account/Manage/ChangePassword?userId=@user.Id">Cambio de clave</a></li>
             }
 
             @if (User.IsInRole(RolesDefinition.Administrator))
             {
-                <li class="nav-item"><a class="nav-link @ManageNavPages.RolesNavClass(ViewContext)" id="profile" href="@("/Identity/Account/Manage/Roles" + query)">Roles</a></li>
+                <li class="nav-item"><a class="nav-link @ManageNavPages.RolesNavClass(ViewContext)" id="profile" href="~/Identity/Account/Manage/Roles?userId=@user.Id">Roles</a></li>
             }
         </ul>
     </div>
